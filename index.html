@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <title>Tools for MongoDB</title>
 </head>
 
@@ -20,20 +20,18 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
 
             <div data-bs-toggle="collapse" data-bs-target="#collapseInstallation" class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="bootstrap-icons.svg#power"></use>
-                </svg><a href="#collapseInstallation">
+                <i class="text-muted flex-shrink-0 me-3 bi bi-power"></i>
+                <a href="#collapseInstallation">
+                    
                     <div>
                         <h4 class="fw-bold mb-0">Installation</h4>
                         <p>Bash script generator for generating script to install MongoDB</p>
                     </div>
                 </a>
             </div>
-            <div href="#collapsePerformance" data-bs-toggle="collapse" data-bs-target="#collapsePerformance"
+            <div data-bs-toggle="collapse" data-bs-target="#collapsePerformance"
                 class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="bootstrap-icons.svg#speedometer2"></use>
-                </svg>
+                <i class="text-muted flex-shrink-0 me-3 bi bi-speedometer2"></i>
                 <div>
                     <a href="#collapsePerformance">
                         <h4 class="fw-bold mb-0">Performance</h4>
@@ -42,54 +40,42 @@
                 </div>
             </div>
             <div class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="bootstrap-icons.svg#save"></use>
-                </svg>
+                <i class="text-muted flex-shrink-0 me-3 bi bi-save"></i>
                 <div>
                     <h4 class="fw-bold mb-0">Data loader</h4>
                     <p></p>
                 </div>
             </div>
             <div class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="bootstrap-icons.svg#box"></use>
-                </svg>
+                <i class="text-muted flex-shrink-0 me-3 bi bi-box"></i>
                 <div>
                     <h4 class="fw-bold mb-0">Migration</h4>
                     <p></p>
                 </div>
             </div>
             <div class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="bootstrap-icons.svg#toggles2"></use>
-                </svg>
+                <i class="text-muted flex-shrink-0 me-3 bi bi-toggles2"></i>
                 <div>
                     <h4 class="fw-bold mb-0">Aggregation</h4>
                     <p></p>
                 </div>
             </div>
             <div class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="bootstrap-icons.svg#tools"></use>
-                </svg>
+                <i class="text-muted flex-shrink-0 me-3 bi bi-tools"></i>
                 <div>
                     <h4 class="fw-bold mb-0">jq</h4>
                     <p></p>
                 </div>
             </div>
             <div class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="bootstrap-icons.svg#cpu-fill"></use>
-                </svg>
+                <i class="text-muted flex-shrink-0 me-3 bi bi-cpu-fill"></i>
                 <div>
                     <h4 class="fw-bold mb-0">Benchmark</h4>
                     <p></p>
                 </div>
             </div>
             <div class="col d-flex align-items-start">
-                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                    <use xlink:href="#"></use>
-                </svg>
+                <i class="text-muted flex-shrink-0 me-3 bi bi-cpu-fill"></i>
                 <div>
                     <h4 class="fw-bold mb-0">Sizing</h4>
                     <p></p>
@@ -121,7 +107,8 @@
                         <div id="installMongoCli" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="installMongoCliCheckbox">
-                                <label class="form-check-label" for="installMongoCliCheckbox">Install MongoDB CLI</label>
+                                <label class="form-check-label" for="installMongoCliCheckbox">Install MongoDB
+                                    CLI</label>
                             </div>
                             <pre><code>sudo yum install mongocli -y</code></pre>
                         </div>
@@ -149,17 +136,18 @@ sudo ./aws/install
                             <div>
                                 <label for="removeServersRegions" class="form-label">Regions</label>
                                 <input type="text" class="form-control" id="removeServersRegions"
-                                    value="eu-west-1 us-west-1 ap-southeast-2" placeholder="Terminate servers in these regions">
+                                    value="eu-west-1 us-west-1 ap-southeast-2"
+                                    placeholder="Terminate servers in these regions">
                             </div>
                             <div>
                                 <label for="removeServersOwner" class="form-label">Owner name</label>
-                                <input type="text" class="form-control" id="removeServersOwner"
-                                value="m.ma" placeholder="Filter servers by owner">
+                                <input type="text" class="form-control" id="removeServersOwner" value="m.ma"
+                                    placeholder="Filter servers by owner">
                             </div>
                             <div>
                                 <label for="removeServersTagName" class="form-label">Tag name (contains)</label>
-                                <input type="text" class="form-control" id="removeServersTagName"
-                                value="Tradecraft" placeholder="Search servers by tag name">
+                                <input type="text" class="form-control" id="removeServersTagName" value="Tradecraft"
+                                    placeholder="Search servers by tag name">
                             </div>
                             <pre><code>
 export REGIONS=(eu-west-1 us-west-1 ap-southeast-2)
@@ -186,37 +174,39 @@ done
                             </div>
                             <div>
                                 <label for="launchInstanceRegion" class="form-label">Region</label>
-                                <input type="text" class="form-control" id="launchInstanceRegion"
-                                    value="eu-west-1" placeholder="Launch instance in this region">
+                                <input type="text" class="form-control" id="launchInstanceRegion" value="eu-west-1"
+                                    placeholder="Launch instance in this region">
                             </div>
                             <div>
                                 <label for="launchInstanceSGName" class="form-label">SG name</label>
-                                <input type="text" class="form-control" id="launchInstanceSGName"
-                                    value="m.ma" placeholder="Create security group with name">
+                                <input type="text" class="form-control" id="launchInstanceSGName" value="m.ma"
+                                    placeholder="Create security group with name">
                             </div>
                             <div>
                                 <label for="launchInstanceSGDesc" class="form-label">SG Description</label>
-                                <input type="text" class="form-control" id="launchInstanceSGDesc"
-                                    value="m ma test sg" placeholder="Create security group with description">
+                                <input type="text" class="form-control" id="launchInstanceSGDesc" value="m ma test sg"
+                                    placeholder="Create security group with description">
                             </div>
                             <div>
                                 <label for="launchInstancePGName" class="form-label">PG Name</label>
-                                <input type="text" class="form-control" id="launchInstancePGName"
-                                    value="mma" placeholder="Create placement group with name">
+                                <input type="text" class="form-control" id="launchInstancePGName" value="mma"
+                                    placeholder="Create placement group with name">
                             </div>
                             <div>
                                 <label for="launchInstanceInstanceType" class="form-label">PG Name</label>
-                                <input type="text" class="form-control" id="launchInstanceInstanceType"
-                                    value="m5.large" placeholder="Instance type">
+                                <input type="text" class="form-control" id="launchInstanceInstanceType" value="m5.large"
+                                    placeholder="Instance type">
                             </div>
                             <div>
                                 <label for="launchInstanceImageName" class="form-label">Image Name</label>
                                 <input type="text" class="form-control" id="launchInstanceImageName"
-                                    value="amzn2-ami-hvm-2.0.20190115-x86_64-gp2" placeholder="Use this image to create instances">
+                                    value="amzn2-ami-hvm-2.0.20190115-x86_64-gp2"
+                                    placeholder="Use this image to create instances">
                             </div>
                             <div>
                                 <label for="launchInstanceDisks" class="form-label">Disks setting</label>
-                                <textarea class="form-control" id="launchInstanceDisks">[{"DeviceName": "/dev/xvdb", "Ebs": {"DeleteOnTermination": true, "Iops": 1000, "VolumeSize": 30, "VolumeType": "io1"}},{"DeviceName": "/dev/xvda", "Ebs": {"DeleteOnTermination": true, "VolumeSize": 8, "VolumeType": "gp2"}}]</textarea>
+                                <textarea class="form-control"
+                                    id="launchInstanceDisks">[{"DeviceName": "/dev/xvdb", "Ebs": {"DeleteOnTermination": true, "Iops": 1000, "VolumeSize": 30, "VolumeType": "io1"}},{"DeviceName": "/dev/xvda", "Ebs": {"DeleteOnTermination": true, "VolumeSize": 8, "VolumeType": "gp2"}}]</textarea>
                             </div>
                             <div>
                                 <label for="launchInstanceKeyName" class="form-label">Key Name</label>
@@ -225,12 +215,13 @@ done
                             </div>
                             <div>
                                 <label for="launchInstanceTags" class="form-label">Tags</label>
-                                <textarea class="form-control" id="launchInstanceTags">ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}]</textarea>
+                                <textarea class="form-control"
+                                    id="launchInstanceTags">ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}]</textarea>
                             </div>
                             <div>
                                 <label for="launchInstanceNoOfHosts" class="form-label">No. of hosts</label>
-                                <input type="number" class="form-control" id="launchInstanceNoOfHosts"
-                                    value="3" placeholder="How many instances to create">
+                                <input type="number" class="form-control" id="launchInstanceNoOfHosts" value="3"
+                                    placeholder="How many instances to create">
                             </div>
                             <pre><code>
 export REGION="eu-west-1"
@@ -264,9 +255,9 @@ aws ec2 run-instances --image-id $AMI \
 --tag-specification "$TAGS"
                             </code></pre>
                         </div>
-                        <hr/>
+                        <hr />
                         <h1>WIP</h1>
-                        <hr/>
+                        <hr />
                         Internal DNS
                         <pre><code>
 export HOSTLIST=$( aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[]  | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } |  select ( .name | contains ("Tradecraft") )|  .privateip ')
