@@ -1,1 +1,670 @@
-Hello World
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Tools for MongoDB</title>
+</head>
+
+<body>
+    <div class="container px-4 py-5" id="icon-grid">
+        <h2 class="pb-2 border-bottom">Menu</h2>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+
+            <div data-bs-toggle="collapse" data-bs-target="#collapseInstallation" class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="bootstrap-icons.svg#power"></use>
+                </svg><a href="#collapseInstallation">
+                    <div>
+                        <h4 class="fw-bold mb-0">Installation</h4>
+                        <p>Bash script generator for generating script to install MongoDB</p>
+                    </div>
+                </a>
+            </div>
+            <div href="#collapsePerformance" data-bs-toggle="collapse" data-bs-target="#collapsePerformance"
+                class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="bootstrap-icons.svg#speedometer2"></use>
+                </svg>
+                <div>
+                    <a href="#collapsePerformance">
+                        <h4 class="fw-bold mb-0">Performance</h4>
+                    </a>
+                    <p></p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="bootstrap-icons.svg#save"></use>
+                </svg>
+                <div>
+                    <h4 class="fw-bold mb-0">Data loader</h4>
+                    <p></p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="bootstrap-icons.svg#box"></use>
+                </svg>
+                <div>
+                    <h4 class="fw-bold mb-0">Migration</h4>
+                    <p></p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="bootstrap-icons.svg#toggles2"></use>
+                </svg>
+                <div>
+                    <h4 class="fw-bold mb-0">Aggregation</h4>
+                    <p></p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="bootstrap-icons.svg#tools"></use>
+                </svg>
+                <div>
+                    <h4 class="fw-bold mb-0">jq</h4>
+                    <p></p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="bootstrap-icons.svg#cpu-fill"></use>
+                </svg>
+                <div>
+                    <h4 class="fw-bold mb-0">Benchmark</h4>
+                    <p></p>
+                </div>
+            </div>
+            <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                    <use xlink:href="#"></use>
+                </svg>
+                <div>
+                    <h4 class="fw-bold mb-0">Sizing</h4>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container px-4 py-5" id="main-content">
+        <div class="accordion" id="accordionMain">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingInstallation">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseInstallation" aria-expanded="true"
+                        aria-controls="collapseInstallation">
+                        Installation
+                    </button>
+                </h2>
+                <div id="collapseInstallation" class="accordion-collapse collapse show"
+                    aria-labelledby="headingInstallation" data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <h3>Prerequisite tools</h3>
+                        <div id="installJq" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="installJqCheckbox">
+                                <label class="form-check-label" for="installJqCheckbox">Install jq</label>
+                            </div>
+                            <pre><code>sudo yum install jq -y</code></pre>
+                        </div>
+                        <div id="installMongoCli" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="installMongoCliCheckbox">
+                                <label class="form-check-label" for="installMongoCliCheckbox">Install MongoDB CLI</label>
+                            </div>
+                            <pre><code>sudo yum install mongocli -y</code></pre>
+                        </div>
+                        <h3>AWS</h3>
+                        <div id="installAwsCli" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="installAwsCliCheckbox">
+                                <label class="form-check-label" for="installAwsCliCheckbox">Install AWS CLI</label>
+                            </div>
+                            <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"
+                                target="_blank">Reference</a>
+                            <pre><code>
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+                            </code></pre>
+                        </div>
+
+                        <div id="removeServers" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="removeServersCheckbox">
+                                <label class="form-check-label" for="removeServersCheckbox">Take down any previous
+                                    servers</label>
+                            </div>
+                            <div>
+                                <label for="removeServersRegions" class="form-label">Regions</label>
+                                <input type="text" class="form-control" id="removeServersRegions"
+                                    value="eu-west-1 us-west-1 ap-southeast-2" placeholder="Terminate servers in these regions">
+                            </div>
+                            <div>
+                                <label for="removeServersOwner" class="form-label">Owner name</label>
+                                <input type="text" class="form-control" id="removeServersOwner"
+                                value="m.ma" placeholder="Filter servers by owner">
+                            </div>
+                            <div>
+                                <label for="removeServersTagName" class="form-label">Tag name (contains)</label>
+                                <input type="text" class="form-control" id="removeServersTagName"
+                                value="Tradecraft" placeholder="Search servers by tag name">
+                            </div>
+                            <pre><code>
+export REGIONS=(eu-west-1 us-west-1 ap-southeast-2)
+export OWNER="m.ma"
+export TAGNAME="Tradecraft"
+for REGION in ${REGIONS[@]}; 
+do
+aws configure set default.region $REGION
+ HOSTLIST=$( aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r --arg TAGNAME "$TAGNAME" '.Reservations[].Instances[]  | { "instanceid" : .InstanceId, "publicip" : .PublicIpAddress, "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } |  select ( .name | contains ($TAGNAME) )| .instanceid ')
+for host in $HOSTLIST
+do
+ echo "Terminating $host in $REGION"
+ aws ec2 terminate-instances --instance-ids $host
+done
+done
+                            </code></pre>
+                        </div>
+
+
+                        <div id="launchInstance" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="launchInstanceCheckbox">
+                                <label class="form-check-label" for="launchInstanceCheckbox">Launch instance</label>
+                            </div>
+                            <div>
+                                <label for="launchInstanceRegion" class="form-label">Region</label>
+                                <input type="text" class="form-control" id="launchInstanceRegion"
+                                    value="eu-west-1" placeholder="Launch instance in this region">
+                            </div>
+                            <div>
+                                <label for="launchInstanceSGName" class="form-label">SG name</label>
+                                <input type="text" class="form-control" id="launchInstanceSGName"
+                                    value="m.ma" placeholder="Create security group with name">
+                            </div>
+                            <div>
+                                <label for="launchInstanceSGDesc" class="form-label">SG Description</label>
+                                <input type="text" class="form-control" id="launchInstanceSGDesc"
+                                    value="m ma test sg" placeholder="Create security group with description">
+                            </div>
+                            <div>
+                                <label for="launchInstancePGName" class="form-label">PG Name</label>
+                                <input type="text" class="form-control" id="launchInstancePGName"
+                                    value="mma" placeholder="Create placement group with name">
+                            </div>
+                            <div>
+                                <label for="launchInstanceInstanceType" class="form-label">PG Name</label>
+                                <input type="text" class="form-control" id="launchInstanceInstanceType"
+                                    value="m5.large" placeholder="Instance type">
+                            </div>
+                            <div>
+                                <label for="launchInstanceImageName" class="form-label">Image Name</label>
+                                <input type="text" class="form-control" id="launchInstanceImageName"
+                                    value="amzn2-ami-hvm-2.0.20190115-x86_64-gp2" placeholder="Use this image to create instances">
+                            </div>
+                            <div>
+                                <label for="launchInstanceDisks" class="form-label">Disks setting</label>
+                                <textarea class="form-control" id="launchInstanceDisks">[{"DeviceName": "/dev/xvdb", "Ebs": {"DeleteOnTermination": true, "Iops": 1000, "VolumeSize": 30, "VolumeType": "io1"}},{"DeviceName": "/dev/xvda", "Ebs": {"DeleteOnTermination": true, "VolumeSize": 8, "VolumeType": "gp2"}}]</textarea>
+                            </div>
+                            <div>
+                                <label for="launchInstanceKeyName" class="form-label">Key Name</label>
+                                <input type="text" class="form-control" id="launchInstanceKeyName"
+                                    value="jlp-tradecraft" placeholder="Use this key for connecting instances">
+                            </div>
+                            <div>
+                                <label for="launchInstanceTags" class="form-label">Tags</label>
+                                <textarea class="form-control" id="launchInstanceTags">ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}]</textarea>
+                            </div>
+                            <div>
+                                <label for="launchInstanceNoOfHosts" class="form-label">No. of hosts</label>
+                                <input type="number" class="form-control" id="launchInstanceNoOfHosts"
+                                    value="3" placeholder="How many instances to create">
+                            </div>
+                            <pre><code>
+export REGION="eu-west-1"
+export SG_NAME="m.ma"
+export SG_DESCRIPTION="m ma test sg"
+export PG_NAME="mma"
+export ITYPE="m5.large"
+export IMG_NAME="amzn2-ami-hvm-2.0.20190115-x86_64-gp2"
+export DISKS='[{"DeviceName": "/dev/xvdb", "Ebs": {"DeleteOnTermination": true, "Iops": 1000, "VolumeSize": 30, "VolumeType": "io1"}},{"DeviceName": "/dev/xvda", "Ebs": {"DeleteOnTermination": true, "VolumeSize": 8, "VolumeType": "gp2"}}]'
+export KEY_NAME="jlp-tradecraft"
+export TAGS='ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}]'
+export NO_OF_HOST=3
+
+aws configure set default.region $REGION
+export VPCID=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" | jq -r '.Vpcs[0].VpcId')
+aws ec2 create-security-group --description "$SG_DESCRIPTION" --group-name "$SG_NAME" --vpc-id $VPCID
+export SECURITYGROUP=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=$SG_NAME" | jq -r '.SecurityGroups[0].GroupId')
+aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 0-63353 --source-group $SECURITYGROUP --protocol tcp  
+
+export AMI=$(aws ec2 describe-images --filters "Name=name,Values=$IMG_NAME" | jq -r '.Images[0].ImageId')
+aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
+export SUBNETID=$(aws ec2 describe-subnets --filters "Name=vpcId,Values=$VPCID" | jq -r '[.Subnets[]  | { id : .SubnetId, tags : .Tags[] } | select ( .tags.Key == "Name") | {id:.id, name: .tags.Value} | select ( .name | contains ("Main"))][0] | .id ')
+aws ec2 run-instances --image-id $AMI \
+--count $NO_OF_HOST \
+--placement GroupName=$PG_NAME \
+--instance-type $ITYPE \
+--key-name $KEY_NAME \
+--subnet-id $SUBNETID \
+--security-group-ids $SECURITYGROUP \
+--block-device-mappings "$DISKS" \
+--tag-specification "$TAGS"
+                            </code></pre>
+                        </div>
+                        <hr/>
+                        <h1>WIP</h1>
+                        <hr/>
+                        Internal DNS
+                        <pre><code>
+export HOSTLIST=$( aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[]  | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } |  select ( .name | contains ("Tradecraft") )|  .privateip ')
+
+HOSTNUM=1
+for IP in $HOSTLIST
+do
+    export FQDN="firstnamelastname0${HOSTNUM}.mdbrecruit.net"
+    echo "Registering $IP as $FQDN"
+echo "{
+            \"Comment\": \"CREATE an A record \",
+            \"Changes\": [{
+            \"Action\": \"UPSERT\",
+                        \"ResourceRecordSet\": {
+                                    \"Name\": \"$FQDN\",
+                                    \"Type\": \"A\",
+                                    \"TTL\": 300,
+                                    \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
+}}]
+}" > newhost.json
+aws route53 change-resource-record-sets --hosted-zone-id Z2S69UIBKD4GJX --change-batch file://newhost.json 
+let "HOSTNUM=HOSTNUM+1"
+done
+</code></pre>
+                        External DNS
+                        <pre><code>
+export HOSTLIST=$( aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[]  | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } |  select ( .name | contains ("Tradecraft") )|  .publicip ')
+
+HOSTNUM=1
+for IP in $HOSTLIST
+do
+    export FQDN="exfirstnamelastname0${HOSTNUM}.mdbrecruit.net"
+    echo "Registering $IP as $FQDN"
+echo "{
+            \"Comment\": \"CREATE an A record \",
+            \"Changes\": [{
+            \"Action\": \"UPSERT\",
+                        \"ResourceRecordSet\": {
+                                    \"Name\": \"$FQDN\",
+                                    \"Type\": \"A\",
+                                    \"TTL\": 300,
+                                    \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
+}}]
+}" > newhost.json
+aws route53 change-resource-record-sets --hosted-zone-id Z2S69UIBKD4GJX --change-batch file://newhost.json 
+let "HOSTNUM=HOSTNUM+1"
+
+done
+</code></pre>
+                        Production Notes
+                        <pre><code>
+cat << 'ENDPRODNOTES' > prodnotes.sh
+echo sudo hostnamectl set-hostname $NEWHOSTNAME
+sudo hostnamectl set-hostname $NEWHOSTNAME
+
+sudo mkfs -t xfs /dev/xvdb
+sudo mkdir /data
+sudo mount /dev/xvdb /data
+
+
+
+grep -q /dev/xvdb /etc/fstab || echo "/dev/xvdb       /data          xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
+sudo findmnt --verify 
+
+
+
+grep -q 'vm.zone_reclaim_mode' /etc/sysctl.conf || echo "vm.zone_reclaim_mode=0
+" | sudo tee --append /etc/sysctl.conf
+sudo sysctl -w  vm.zone_reclaim_mode=0
+
+grep -q 'vm.swappiness' /etc/sysctl.conf || echo "vm.swappiness=1" | sudo tee --append /etc/sysctl.conf
+sudo sysctl -w  vm.swappiness=1
+
+for limit in fsize cpu as memlock
+do
+    grep "mongodb" /etc/security/limits.conf | grep -q $limit || echo -e "mongod     hard   $limit    unlimited\nmongod     soft    $limit   unlimited" | sudo tee --append /etc/security/limits.conf
+done
+
+for limit in nofile noproc
+do
+    grep "mongodb" /etc/security/limits.conf | grep -q $limit || echo -e "mongod     hard   $limit    64000\nmongod     soft    $limit   64000" | sudo tee --append /etc/security/limits.conf
+done
+
+
+SCRIPT=$(cat << 'ENDSCRIPT'
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          disable-transparent-hugepages
+# Required-Start:    $local_fs
+# Required-Stop:
+# X-Start-Before:    mongod mongodb-mms-automation-agent
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Disable Linux transparent huge pages
+# Description:       Disable Linux transparent huge pages, to improve
+#                    database performance.
+### END INIT INFO
+
+case $1 in
+    start)
+    if [ -d /sys/kernel/mm/transparent_hugepage ]; then
+        thp_path=/sys/kernel/mm/transparent_hugepage
+    elif [ -d /sys/kernel/mm/redhat_transparent_hugepage ]; then
+        thp_path=/sys/kernel/mm/redhat_transparent_hugepage
+    else
+        return 0
+    fi
+
+    echo 'never' > ${thp_path}/enabled
+    echo 'never' > ${thp_path}/defrag
+
+    re='^[0-1]+$'
+    if [[ $(cat ${thp_path}/khugepaged/defrag) =~ $re ]]
+    then
+        # RHEL 7
+        echo 0  > ${thp_path}/khugepaged/defrag
+    else
+        # RHEL 6
+        echo 'no' > ${thp_path}/khugepaged/defrag
+    fi
+
+    #Set Readahead for Data Disk
+    blockdev --setra 8 /dev/xvdb
+    unset re
+    unset thp_path
+    ;;
+esac
+ENDSCRIPT
+)
+
+echo "$SCRIPT" | sudo tee /etc/init.d/disable-transparent-hugepages
+
+sudo chmod 755 /etc/init.d/disable-transparent-hugepages
+
+sudo chkconfig --add disable-transparent-hugepages
+
+
+sudo reboot
+ENDPRODNOTES
+
+
+for h in 1 2 3 4 5 6 7
+do
+
+scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem prodnotes.sh ec2-user@exfirstnamelastname0${h}.mdbrecruit.net:
+done
+    
+for h in 1 2 3 4 5 6 7
+do
+
+ssh  -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname0${h}.mdbrecruit.net "export NEWHOSTNAME=firstnamelastname0${h}.mdbrecruit.net;chmod u+x prodnotes.sh && ./prodnotes.sh"
+done
+
+</code></pre>
+                        Install automation agents
+                        <pre><code>
+cat << 'ENDSCRIPT' > setupagent.sh
+curl -OL https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-6.3.0.5643-1.x86_64.rhel7.rpm
+
+sudo rpm -U mongodb-mms-automation-agent-manager-6.3.0.5643-1.x86_64.rhel7.rpm
+
+mmsGroupId=5c6eaee479358e65d00c2133
+
+mmsApiKey=5c6eaf5479358e6705033f8f08fe746d8d28db2923c6c9b42e21489b
+
+sudo sed -i  "s#mmsGroupId=.*#mmsGroupId=$mmsGroupId#" /etc/mongodb-mms/automation-agent.config
+
+sudo sed -i  "s#mmsApiKey=.*#mmsApiKey=$mmsApiKey#" /etc/mongodb-mms/automation-agent.config
+
+sudo mkdir /data
+sudo chown mongod:mongod /data
+
+sudo systemctl start mongodb-mms-automation-agent.service
+sudo systemctl enable mongodb-mms-automation-agent.service
+
+ENDSCRIPT
+
+for h in 1 2 3 4 5 6 7
+do
+
+scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem setupagent.sh ec2-user@exfirstnamelastname0${h}.mdbrecruit.net:
+done
+for h in 1 2 3 4 5 6 7
+do
+
+ssh  -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname0${h}.mdbrecruit.net "export NEWHOSTNAME=firstnamelastname0${h}.mdbrecruit.net;chmod u+x setupagent.sh && ./setupagent.sh"
+done
+        
+</code></pre>
+
+                        Install MongoDB
+                        <pre><code>
+sudo mkdir -p /data/db
+sudo mkdir -p /data/logs
+sudo mkdir -p /data/keys
+
+echo "[mongodb-org-5.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/5.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc" | sudo tee /etc/yum.repos.d/mongodb-org-5.0.repo 
+sudo yum install -y mongodb-org
+sudo chown -R mongod:mongod /data
+
+sudo sed -i 's/\s\sdbPath:.*$/  dbPath: \/data\/db/g' /etc/mongod.conf
+sudo sed -i 's/\s\spath:.*$/  path: \/data\/logs\/mongod.log/g' /etc/mongod.conf
+sudo sed -i 's/#replication.*$/replication:\n  replSetName: mongodb-is-awesome/g' /etc/mongod.conf
+sudo sed -i 's/  bindIp.*$/  bindIp: 0.0.0.0/g' /etc/mongod.conf
+
+sudo systemctl start mongod
+mongo 
+rs.initiate( {
+	_id: "mongodb-is-awesome",
+	version: 1,
+	members: [
+		{ _id: 0, host : "<HOST1>:27017" },
+		{ _id: 1, host : "<HOST2>:27017" },
+		{ _id: 2, host : "<HOST3>:27017" }
+	]
+})
+</code></pre>
+                        enable security with key
+                        <pre><code>
+openssl rand -base64 756 > keyfile
+sudo chmod 400 /data/keys/keyfile
+sudo chown mongod:mongod /data/keys/keyfile
+sudo sed -i 's/#security:/security:\n  authorization: enabled\n  keyFile:  \/data\/keys\/keyfile/g' /etc/mongod.conf
+sudo systemctl restart mongod
+sudo sed -i 's/  keyFile:  \/data\/keys\/keyfile/  keyFile:  \/data\/keys\/keyfile\n  javascriptEnabled:  true/g' /etc/mongod.conf
+sudo systemctl restart mongod
+
+</code></pre>
+                        Enable TLS
+                        <pre><code>
+# install a newer version of openSSL
+sudo yum install -y openssl11
+
+# create the CA
+openssl11 req -newkey rsa:2048 -new -x509 -sha256 -extensions v3_ca -out ca.cert -keyout ca.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/CN=mylittleca.com" -nodes
+
+# Allow copying of extensions from CSRs to the resulting certificates
+sudo sed -i 's/^# copy_extensions = copy.*/copy_extensions = copy/' /etc/pki/tls/openssl.cnf
+
+# Setup the tracking files for certificate registration
+sudo /bin/rm -f /etc/pki/CA/index*
+sudo /bin/rm -f /etc/pki/CA/serial*
+
+sudo touch /etc/pki/CA/index.txt
+echo 1000 | sudo tee  /etc/pki/CA/serial
+
+host0="om-1-witty-mayfly.mdbtraining.net"
+host1="om-2-witty-mayfly.mdbtraining.net"
+host2="om-3-witty-mayfly.mdbtraining.net"
+loadbalancer="witty-mayfly-om.mdbtraining.net"
+clusterdesc="OpsManager"
+
+# Generate the key files and CSRs for each host, include the SAN for the load balancer and the host itself
+openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${loadbalancer},DNS:${host0}" -sha256 -out ${host0}.csr -keyout ${host0}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=${clusterdesc}/CN=${host0}"
+openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${loadbalancer},DNS:${host1}" -sha256 -out ${host1}.csr -keyout ${host1}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=${clusterdesc}/CN=${host1}"
+openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${loadbalancer},DNS:${host2}" -sha256 -out ${host2}.csr -keyout ${host2}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=${clusterdesc}/CN=${host2}"
+
+# Sign the certificates for each host
+sudo openssl11 ca -notext -in ${host0}.csr -out ${host0}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
+sudo openssl11 ca -notext -in ${host1}.csr -out ${host1}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
+sudo openssl11 ca -notext -in ${host2}.csr -out ${host2}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
+
+# concatenate the private key and the certificate into a PEM file
+cat ${host0}.key ${host0}.cert > ${host0}.pem
+cat ${host1}.key ${host1}.cert > ${host1}.pem
+cat ${host2}.key ${host2}.cert > ${host2}.pem
+
+# Restore the original settings for openSSL
+sudo sed -i 's/^copy_extensions = copy$/# copy_extensions = copy/' /etc/pki/tls/openssl.cnf
+
+</code></pre>
+                        Ops Manager
+                        <pre><code>
+curl -OL https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
+sudo rpm -U mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
+
+sudo sed -i 's/mmsGroupId=/mmsGroupId=<Insert Group Id>/g' /etc/mongodb-mms/automation-agent.config
+
+sudo sed -i 's/mmsApiKey=/mmsApiKey=<Insert Agent API Key Here>/g' /etc/mongodb-mms/automation-agent.config
+
+sudo systemctl start mongodb-mms-automation-agent.service
+    
+</code></pre>
+
+                        Local RS
+                        <pre><code>
+sudo mkfs.xfs /dev/nvme1n1
+grep -q /dev/nvme1n1 /etc/fstab || echo "/dev/nvme1n1       /data         xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
+sudo mkdir /data
+sudo chown mongodb:mongodb /data
+sudo mount /dev/nvme1n1 /data
+sudo mkdir /data/db
+sudo mkdir /data/logs
+sudo chown -R mongodb:mongodb /data
+sudo mkdir /var/run/mongodb
+sudo chown mongodb:mongodb /var/run/mongodb
+
+
+# configuration for the mongod instances
+cat << 'ENDCONF' | sudo tee /etc/mongod.conf
+systemLog:
+    destination: file
+    logAppend: false
+    path: /data/logs/mongodb.log
+storage:
+    dbPath: /data/db
+    wiredTiger:
+    engineConfig:
+        cacheSizeGB: 1 
+processManagement:
+    fork: true
+    pidFilePath: /var/run/mongodb/mongod.pid
+    timeZoneInfo: /usr/share/zoneinfo
+net:
+    port: 27017
+    bindIpAll: true
+security:
+    authorization: enabled
+    keyFile: /etc/mongodb.key
+replication:
+    replSetName: myRS
+ENDCONF
+
+
+# Key for replica set member authentication
+cat << 'ENDKEY' | sudo tee /etc/mongodb.key
+wAwXJcO1IcfqK2attHZTrTp50TL4lbv8iHxzM0GjqjgpprV9xq+VE8H9hd0VqWgd
+ENDKEY
+sudo chown mongodb:mongodb /etc/mongodb.key
+sudo chmod 400 /etc/mongodb.key
+
+sudo service mongod restart
+sleep 10
+mongo --eval "rs.initiate()"
+sleep 10
+
+sudo systemctl enable mongod
+
+mongo --eval "db.createUser({user:'mongoadmin',pwd: 'passwordone',roles:[{db:'admin',role:'root'}]})" admin
+</code></pre>
+
+                        <div class="mb-3">
+                            <label for="finalTextarea" class="form-label">Script</label>
+                            <textarea class="form-control" id="finalTextarea" rows="10"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingPerformance">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapsePerformance" aria-expanded="false" aria-controls="collapsePerformance">
+                        Performance
+                    </button>
+                </h2>
+                <div id="collapsePerformance" class="accordion-collapse collapse" aria-labelledby="headingPerformance"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
+                        collapse plugin adds the appropriate classes that we use to style each element. These classes
+                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
+                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+                        does limit overflow.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Accordion Item #3
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the
+                        collapse plugin adds the appropriate classes that we use to style each element. These classes
+                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
+                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
+                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
+                        does limit overflow.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
