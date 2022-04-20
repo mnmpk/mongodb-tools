@@ -22,15 +22,14 @@
             <div data-bs-toggle="collapse" data-bs-target="#collapseInstallation" class="col d-flex align-items-start">
                 <i class="text-muted flex-shrink-0 me-3 bi bi-power"></i>
                 <a href="#collapseInstallation">
-                    
+
                     <div>
                         <h4 class="fw-bold mb-0">Installation</h4>
                         <p>Bash script generator for generating script to install MongoDB</p>
                     </div>
                 </a>
             </div>
-            <div data-bs-toggle="collapse" data-bs-target="#collapsePerformance"
-                class="col d-flex align-items-start">
+            <div data-bs-toggle="collapse" data-bs-target="#collapsePerformance" class="col d-flex align-items-start">
                 <i class="text-muted flex-shrink-0 me-3 bi bi-speedometer2"></i>
                 <div>
                     <a href="#collapsePerformance">
@@ -255,17 +254,52 @@ aws ec2 run-instances --image-id $AMI \
 --tag-specification "$TAGS"
                             </code></pre>
                         </div>
-                        <hr />
-                        <h1>WIP</h1>
-                        <hr />
-                        Internal DNS
-                        <pre><code>
-export HOSTLIST=$( aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[]  | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } |  select ( .name | contains ("Tradecraft") )|  .privateip ')
+
+                        <div id="dns" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="dnsCheckbox">
+                                <label class="form-check-label" for="dnsCheckbox">DNS</label>
+                            </div>
+                            <div>
+                                <label for="dnsDomain" class="form-label">Domain Name</label>
+                                <input type="text" class="form-control" id="dnsDomain" value="mdbrecruit.net"
+                                    placeholder="The domain name">
+                            </div>
+                            <div>
+                                <label for="dnsHostedZoneId" class="form-label">Hosted zone Id</label>
+                                <input type="text" class="form-control" id="dnsHostedZoneId" value="Z2S69UIBKD4GJX"
+                                    placeholder="The Hosted Zone Id">
+                            </div>
+                            <div>
+                                <label for="dnsInternalHostList" class="form-label">host list</label>
+                                <textarea class="form-control" id="dnsInternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .privateip ')</textarea>
+                            </div>
+                            <div>
+                                <label for="dnsInternalSubdomainPrefix" class="form-label">Subdomain prefix</label>
+                                <input type="text" class="form-control" id="dnsInternalSubdomainPrefix" value="mma"
+                                    placeholder="The sub domain prefix">
+                            </div>
+                            <div>
+                                <label for="dnsExternalHostList" class="form-label">host list</label>
+                                <textarea class="form-control" id="dnsExternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .publicip ')</textarea>
+                            </div>
+                            <div>
+                                <label for="dnsExternalSubdomainPrefix" class="form-label">Subdomain prefix</label>
+                                <input type="text" class="form-control" id="dnsExternalSubdomainPrefix" value="exmma"
+                                    placeholder="The external sub domain prefix">
+                            </div>
+                            <pre><code>
+export DOMAIN="mdbrecruit.net"
+export HOSTEDZONE="Z2S69UIBKD4GJX"
+export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .privateip ')
+export INTERNAL_SUBDOMAIN="mma"
+export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .publicip ')
+export EXTERNAL_SUBDOMAIN="exmma"
 
 HOSTNUM=1
-for IP in $HOSTLIST
+for IP in $INTERNAL_HOSTLIST
 do
-    export FQDN="firstnamelastname0${HOSTNUM}.mdbrecruit.net"
+    export FQDN="${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
     echo "Registering $IP as $FQDN"
 echo "{
             \"Comment\": \"CREATE an A record \",
@@ -278,18 +312,14 @@ echo "{
                                     \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
 }}]
 }" > newhost.json
-aws route53 change-resource-record-sets --hosted-zone-id Z2S69UIBKD4GJX --change-batch file://newhost.json 
+aws route53 change-resource-record-sets --hosted-zone-id $HOSTEDZONE --change-batch file://newhost.json 
 let "HOSTNUM=HOSTNUM+1"
 done
-</code></pre>
-                        External DNS
-                        <pre><code>
-export HOSTLIST=$( aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[]  | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } |  select ( .name | contains ("Tradecraft") )|  .publicip ')
 
 HOSTNUM=1
-for IP in $HOSTLIST
+for IP in $EXTERNAL_HOSTLIST
 do
-    export FQDN="exfirstnamelastname0${HOSTNUM}.mdbrecruit.net"
+    export FQDN="${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
     echo "Registering $IP as $FQDN"
 echo "{
             \"Comment\": \"CREATE an A record \",
@@ -302,13 +332,37 @@ echo "{
                                     \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
 }}]
 }" > newhost.json
-aws route53 change-resource-record-sets --hosted-zone-id Z2S69UIBKD4GJX --change-batch file://newhost.json 
+aws route53 change-resource-record-sets --hosted-zone-id $HOSTEDZONE --change-batch file://newhost.json 
 let "HOSTNUM=HOSTNUM+1"
-
 done
-</code></pre>
-                        Production Notes
-                        <pre><code>
+                            </code></pre>
+                        </div>
+
+                        <div id="productionNotes" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="productionNotesCheckbox">
+                                <label class="form-check-label" for="productionNotesCheckbox">Production Notes</label>
+                            </div>
+                            <div>
+                                <label for="productionNotesHostList" class="form-label">host list</label>
+                                <input type="text" class="form-control" id="productionNotesHostList"
+                                    value="mma1.mdbrecruit.net mma2.mdbrecruit.net" placeholder="host list of the servers">
+                            </div>
+                            <div>
+                                <label for="productionNotesExternalDNSPrefix" class="form-label">Subdomain prefix</label>
+                                <input type="text" class="form-control" id="productionNotesExternalDNSPrefix" value="ex"
+                                    placeholder="External DNS prefix">
+                            </div>
+                            <div>
+                                <label for="productionNotesKeyPath" class="form-label">Key path</label>
+                                <input type="text" class="form-control" id="productionNotesKeyPath" value="~/.ssh/jlp-tradecraft.pem"
+                                    placeholder="Key path">
+                            </div>
+                            <pre><code>
+export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
+export PREFIX="ex"
+export KEYPATH="~/.ssh/jlp-tradecraft.pem"
+
 cat << 'ENDPRODNOTES' > prodnotes.sh
 echo sudo hostnamectl set-hostname $NEWHOSTNAME
 sudo hostnamectl set-hostname $NEWHOSTNAME
@@ -399,19 +453,18 @@ sudo reboot
 ENDPRODNOTES
 
 
-for h in 1 2 3 4 5 6 7
+for HOST in $HOSTLIST
 do
-
-scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem prodnotes.sh ec2-user@exfirstnamelastname0${h}.mdbrecruit.net:
-done
-    
-for h in 1 2 3 4 5 6 7
-do
-
-ssh  -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname0${h}.mdbrecruit.net "export NEWHOSTNAME=firstnamelastname0${h}.mdbrecruit.net;chmod u+x prodnotes.sh && ./prodnotes.sh"
+scp -o StrictHostKeyChecking=no -i ${KEYPATH} prodnotes.sh ec2-user@${PREFIX}${HOST}:
+ssh  -o StrictHostKeyChecking=no -i ${KEYPATH} ec2-user@${PREFIX}${HOST} "export NEWHOSTNAME=${HOST};chmod u+x prodnotes.sh && ./prodnotes.sh"
 done
 
-</code></pre>
+                            </code></pre>
+                        </div>
+
+                        <hr />
+                        <h1>WIP</h1>
+                        <hr />
                         Install automation agents
                         <pre><code>
 cat << 'ENDSCRIPT' > setupagent.sh

@@ -24,6 +24,27 @@ $(window).on('load', function() {
         $("#launchInstance code").text(replaceFirstNLines($("#launchInstance code").text(), newLines));
     }
     $('#launchInstance .form-control').on('change', launchInstances);
+    
+    dns = function(){
+        newLines = "\n";
+        newLines += "export DOMAIN=\""+$('#dnsDomain').val()+"\"\n";
+        newLines += "export HOSTEDZONE=\""+$('#dnsHostedZoneId').val()+"\"\n";
+        newLines += "export INTERNAL_HOSTLIST="+$('#dnsInternalHostList').val()+"\n";
+        newLines += "export INTERNAL_SUBDOMAIN=\""+$('#dnsInternalSubdomainPrefix').val()+"\"\n";
+        newLines += "export EXTERNAL_HOSTLIST="+$('#dnsExternalHostList').val()+"\n";
+        newLines += "export EXTERNAL_SUBDOMAIN=\""+$('#dnsExternalSubdomainPrefix').val()+"\"";
+        $("#dns code").text(replaceFirstNLines($("#dns code").text(), newLines));
+    }
+    $('#dns .form-control').on('change', dns);
+
+    prodNotes = function(){
+        newLines = "\n";
+        newLines += "export HOSTLIST=("+$('#productionNotesHostList').val()+")\n";
+        newLines += "export PREFIX=\""+$('#productionNotesExternalDNSPrefix').val()+"\"\n";
+        newLines += "export KEYPATH=\""+$('#productionNotesKeyPath').val()+"\"";
+        $("#productionNotes code").text(replaceFirstNLines($("#productionNotes code").text(), newLines));
+    }
+    $('#productionNotes .form-control').on('change', prodNotes);
 
 });
 function replaceFirstNLines(originalText, newLines){
