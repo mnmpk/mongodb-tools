@@ -46,6 +46,54 @@ $(window).on('load', function() {
     }
     $('#productionNotes .form-control').on('change', prodNotes);
 
+    automationAgents = function(){
+        newLines = "\n";
+        newLines += "export HOSTLIST=("+$('#automationAgentsHostList').val()+")\n";
+        newLines += "export PREFIX=\""+$('#automationAgentsExternalDNSPrefix').val()+"\"\n";
+        newLines += "export KEYPATH=\""+$('#automationAgentsKeyPath').val()+"\"\n";
+        newLines += "export GROUPID=\""+$('#automationAgentsGroupId').val()+"\"\n";
+        newLines += "export AGENTSAPIKEY=\""+$('#automationAgentsApiKey').val()+"\"";
+        $("#automationAgents code").text(replaceFirstNLines($("#automationAgents code").text(), newLines));
+    }
+    $('#automationAgents .form-control').on('change', automationAgents);
+
+    configMongod = function(){
+        newLines = "\n";
+        newLines += "export PATH=\""+$('#configMongodPath').val()+"\"\n";
+        newLines += "export DBPATH=\"$PATH"+$('#configMongodDBPath').val()+"\"\n";
+        newLines += "export LOGPATH=\"$PATH"+$('#configMongodLogPath').val()+"\"\n";
+        newLines += "export KEYPATH=\"$PATH"+$('#configMongodKeyPath').val()+"\"\n";
+        $("#configMongod code").text(replaceFirstNLines($("#configMongod code").text(), newLines));
+    }
+    $('#configMongod .form-control').on('change', configMongod);
+
+    configRS = function(){
+        newLines = "\n";
+        newLines += "export RSNAME=\""+$('#configRSName').val()+"\"\n";
+        $("#configRS code").text(replaceFirstNLines($("#configRS code").text(), newLines));
+    }
+    $('#configRS .form-control').on('change', configRS);
+
+    replicaSet = function(){
+        newLines = "\n";
+        newLines += "mongo --eval 'rs.initiate("+$('#replicaSetDocument').val()+")'";
+        $("#replicaSet code").text(newLines);
+    }
+    $('#replicaSet .form-control').on('change', replicaSet);
+
+    generateTLSCert = function(){
+        newLines = "\n";
+        newLines += "export HOSTLIST=("+$('#generateTLSCertHostList').val()+")\n";
+        newLines += "export ALTNAME=\""+$('#generateTLSCertAltName').val()+"\"\n";
+        newLines += "export C=\""+$('#generateTLSCertC').val()+"\"\n";
+        newLines += "export ST=\""+$('#generateTLSCertST').val()+"\"\n";
+        newLines += "export L=\""+$('#generateTLSCertL').val()+"\"\n";
+        newLines += "export O=\""+$('#generateTLSCertO').val()+"\"\n";
+        newLines += "export OU=\""+$('#generateTLSCertOU').val()+"\"\n";
+        newLines += "export ROOTCN=\""+$('#generateTLSCertCN').val()+"\"\n";
+        $("#generateTLSCert code").text(replaceFirstNLines($("#generateTLSCert code").text(), newLines));
+    }
+    $('#generateTLSCert .form-control').on('change', generateTLSCert);
 });
 function replaceFirstNLines(originalText, newLines){
     let lines = originalText.split('\n');

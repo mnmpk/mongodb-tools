@@ -272,7 +272,8 @@ aws ec2 run-instances --image-id $AMI \
                             </div>
                             <div>
                                 <label for="dnsInternalHostList" class="form-label">host list</label>
-                                <textarea class="form-control" id="dnsInternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .privateip ')</textarea>
+                                <textarea class="form-control"
+                                    id="dnsInternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .privateip ')</textarea>
                             </div>
                             <div>
                                 <label for="dnsInternalSubdomainPrefix" class="form-label">Subdomain prefix</label>
@@ -281,7 +282,8 @@ aws ec2 run-instances --image-id $AMI \
                             </div>
                             <div>
                                 <label for="dnsExternalHostList" class="form-label">host list</label>
-                                <textarea class="form-control" id="dnsExternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .publicip ')</textarea>
+                                <textarea class="form-control"
+                                    id="dnsExternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .publicip ')</textarea>
                             </div>
                             <div>
                                 <label for="dnsExternalSubdomainPrefix" class="form-label">Subdomain prefix</label>
@@ -338,6 +340,7 @@ done
                             </code></pre>
                         </div>
 
+                        <h3>AWS</h3>
                         <div id="productionNotes" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="productionNotesCheckbox">
@@ -346,17 +349,19 @@ done
                             <div>
                                 <label for="productionNotesHostList" class="form-label">host list</label>
                                 <input type="text" class="form-control" id="productionNotesHostList"
-                                    value="mma1.mdbrecruit.net mma2.mdbrecruit.net" placeholder="host list of the servers">
+                                    value="mma1.mdbrecruit.net mma2.mdbrecruit.net"
+                                    placeholder="host list of the servers">
                             </div>
                             <div>
-                                <label for="productionNotesExternalDNSPrefix" class="form-label">Subdomain prefix</label>
+                                <label for="productionNotesExternalDNSPrefix" class="form-label">Subdomain
+                                    prefix</label>
                                 <input type="text" class="form-control" id="productionNotesExternalDNSPrefix" value="ex"
                                     placeholder="External DNS prefix">
                             </div>
                             <div>
                                 <label for="productionNotesKeyPath" class="form-label">Key path</label>
-                                <input type="text" class="form-control" id="productionNotesKeyPath" value="~/.ssh/jlp-tradecraft.pem"
-                                    placeholder="Key path">
+                                <input type="text" class="form-control" id="productionNotesKeyPath"
+                                    value="~/.ssh/jlp-tradecraft.pem" placeholder="Key path">
                             </div>
                             <pre><code>
 export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
@@ -462,19 +467,66 @@ done
                             </code></pre>
                         </div>
 
-                        <hr />
-                        <h1>WIP</h1>
-                        <hr />
-                        Install automation agents
-                        <pre><code>
+                        <div id="mountDisk" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="mountDiskCheckbox">
+                                <label class="form-check-label" for="mountDiskCheckbox">Mount Disk</label>
+                            </div>
+
+                            <pre><code>
+sudo mkfs.xfs /dev/nvme1n1
+grep -q /dev/nvme1n1 /etc/fstab || echo "/dev/nvme1n1       /data         xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
+sudo mount /dev/nvme1n1 /data
+                            </code></pre>
+                        </div>
+                        <div id="automationAgents" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="automationAgentsCheckbox">
+                                <label class="form-check-label" for="automationAgentsCheckbox">Install automation
+                                    agents</label>
+                            </div>
+                            <div>
+                                <label for="automationAgentsHostList" class="form-label">host list</label>
+                                <input type="text" class="form-control" id="automationAgentsHostList"
+                                    value="mma1.mdbrecruit.net mma2.mdbrecruit.net"
+                                    placeholder="host list of the servers">
+                            </div>
+                            <div>
+                                <label for="automationAgentsExternalDNSPrefix" class="form-label">Subdomain
+                                    prefix</label>
+                                <input type="text" class="form-control" id="automationAgentsExternalDNSPrefix"
+                                    value="ex" placeholder="External DNS prefix">
+                            </div>
+                            <div>
+                                <label for="automationAgentsKeyPath" class="form-label">Key path</label>
+                                <input type="text" class="form-control" id="automationAgentsKeyPath"
+                                    value="~/.ssh/jlp-tradecraft.pem" placeholder="Key path">
+                            </div>
+                            <div>
+                                <label for="automationAgentsGroupId" class="form-label">Group / Project Id</label>
+                                <input type="text" class="form-control" id="automationAgentsGroupId" value="623dd817d4d33441855dfd5e"
+                                    placeholder="The group / project Id from Cloud/Ops Manager">
+                            </div>
+                            <div>
+                                <label for="automationAgentsApiKey" class="form-label">Agents API Key</label>
+                                <input type="text" class="form-control" id="automationAgentsApiKey" value="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
+                                    placeholder="The Agent API Key from Cloud/Ops Manager">
+                            </div>
+                            <pre><code>
+export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
+export PREFIX="ex"
+export KEYPATH="~/.ssh/jlp-tradecraft.pem"
+export GROUPID="623dd817d4d33441855dfd5e"
+export AGENTSAPIKEY="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
+
 cat << 'ENDSCRIPT' > setupagent.sh
 curl -OL https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-6.3.0.5643-1.x86_64.rhel7.rpm
 
 sudo rpm -U mongodb-mms-automation-agent-manager-6.3.0.5643-1.x86_64.rhel7.rpm
 
-mmsGroupId=5c6eaee479358e65d00c2133
+mmsGroupId=$GROUPID
 
-mmsApiKey=5c6eaf5479358e6705033f8f08fe746d8d28db2923c6c9b42e21489b
+mmsApiKey=$AGENTSAPIKEY
 
 sudo sed -i  "s#mmsGroupId=.*#mmsGroupId=$mmsGroupId#" /etc/mongodb-mms/automation-agent.config
 
@@ -488,25 +540,24 @@ sudo systemctl enable mongodb-mms-automation-agent.service
 
 ENDSCRIPT
 
-for h in 1 2 3 4 5 6 7
+for HOST in $HOSTLIST
 do
 
-scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem setupagent.sh ec2-user@exfirstnamelastname0${h}.mdbrecruit.net:
-done
-for h in 1 2 3 4 5 6 7
-do
+scp -o StrictHostKeyChecking=no -i ${KEYPATH} setupagent.sh ec2-user@${PREFIX}${HOST}:
+ssh  -o StrictHostKeyChecking=no -i ${KEYPATH} ec2-user@${PREFIX}${HOST} "export GROUPID=${GROUPID};export AGENTSAPIKEY=${AGENTSAPIKEY};chmod u+x setupagent.sh && ./setupagent.sh"
 
-ssh  -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname0${h}.mdbrecruit.net "export NEWHOSTNAME=firstnamelastname0${h}.mdbrecruit.net;chmod u+x setupagent.sh && ./setupagent.sh"
 done
         
-</code></pre>
+                            </code></pre>
+                        </div>
 
-                        Install MongoDB
-                        <pre><code>
-sudo mkdir -p /data/db
-sudo mkdir -p /data/logs
-sudo mkdir -p /data/keys
-
+                        <div id="installMongodCommunity" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="installMongodCommunityCheckbox">
+                                <label class="form-check-label" for="installMongodCommunityCheckbox">Install MongoDB
+                                    Community Edition</label>
+                            </div>
+                            <pre><code>
 echo "[mongodb-org-5.0]
 name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/5.0/x86_64/
@@ -514,43 +565,227 @@ gpgcheck=1
 enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc" | sudo tee /etc/yum.repos.d/mongodb-org-5.0.repo 
 sudo yum install -y mongodb-org
-sudo chown -R mongod:mongod /data
+                            </code></pre>
+                        </div>
 
-sudo sed -i 's/\s\sdbPath:.*$/  dbPath: \/data\/db/g' /etc/mongod.conf
-sudo sed -i 's/\s\spath:.*$/  path: \/data\/logs\/mongod.log/g' /etc/mongod.conf
-sudo sed -i 's/#replication.*$/replication:\n  replSetName: mongodb-is-awesome/g' /etc/mongod.conf
-sudo sed -i 's/  bindIp.*$/  bindIp: 0.0.0.0/g' /etc/mongod.conf
+                        <div id="installMongodEnterprise" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="installMongodEnterpriseCheckbox">
+                                <label class="form-check-label" for="installMongodEnterpriseCheckbox">Install MongoDB
+                                    Enterprise Edition</label>
+                            </div>
+                            <pre><code>
+echo "[mongodb-enterprise-5.0]
+name=MongoDB Enterprise Repository
+baseurl=https://repo.mongodb.com/yum/amazon/2/mongodb-enterprise/5.0/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc" | sudo tee /etc/yum.repos.d/mongodb-enterprise-5.0.repo 
+sudo yum install -y mongodb-enterprise
+                            </code></pre>
+                        </div>
+                        <div id="configMongod" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="configMongodCheckbox">
+                                <label class="form-check-label" for="configMongodCheckbox">Config MongoDB</label>
+                            </div>
+                            <div>
+                                <label for="configMongodPath" class="form-label">Path</label>
+                                <input type="text" class="form-control" id="configMongodPath" value="/data"
+                                    placeholder="Path">
+                            </div>
+                            <div>
+                                <label for="configMongodDBPath" class="form-label">DB Path</label>
+                                <input type="text" class="form-control" id="configMongodDBPath" value="/db"
+                                    placeholder="DB Path">
+                            </div>
+                            <div>
+                                <label for="configMongodLogPath" class="form-label">Log Path</label>
+                                <input type="text" class="form-control" id="configMongodLogPath" value="/logs"
+                                    placeholder="Log Path">
+                            </div>
+                            <div>
+                                <label for="configMongodKeyPath" class="form-label">Key Path</label>
+                                <input type="text" class="form-control" id="configMongodKeyPath" value="/keys"
+                                    placeholder="Key Path">
+                            </div>
+                            <pre><code>
+export PATH="/data"          
+export DBPATH="$PATH/db"
+export LOGPATH="$PATH/logs"
+export KEYPATH="$PATH/keys"
 
-sudo systemctl start mongod
-mongo 
-rs.initiate( {
-	_id: "mongodb-is-awesome",
-	version: 1,
-	members: [
-		{ _id: 0, host : "<HOST1>:27017" },
-		{ _id: 1, host : "<HOST2>:27017" },
-		{ _id: 2, host : "<HOST3>:27017" }
-	]
-})
-</code></pre>
-                        enable security with key
-                        <pre><code>
+sudo mkdir -p $DBPATH
+sudo mkdir -p $LOGPATH
+sudo mkdir -p $KEYPATH
+
 openssl rand -base64 756 > keyfile
-sudo chmod 400 /data/keys/keyfile
-sudo chown mongod:mongod /data/keys/keyfile
-sudo sed -i 's/#security:/security:\n  authorization: enabled\n  keyFile:  \/data\/keys\/keyfile/g' /etc/mongod.conf
+sudo chmod 400 $KEYPATH/keyfile
+sudo chown -R mongod:mongod $PATH
+
+sudo sed -i 's@\s\sdbPath:.*$@  dbPath: '"$DBPATH"'@g' /etc/mongod.conf
+sudo sed -i 's@\s\spath:.*$@  path: '"$LOGPATH"'/mongod.log@g' /etc/mongod.conf
+sudo sed -i 's@  bindIp.*$@  bindIp: 0.0.0.0@g' /etc/mongod.conf
+sudo systemctl start mongod
+sudo sed -i 's@#security:@security:\n  authorization: enabled\n  keyFile:  '"$KEYPATH"'/keyfile@g' /etc/mongod.conf
 sudo systemctl restart mongod
-sudo sed -i 's/  keyFile:  \/data\/keys\/keyfile/  keyFile:  \/data\/keys\/keyfile\n  javascriptEnabled:  true/g' /etc/mongod.conf
+sudo sed -i 's@  keyFile:  '"$KEYPATH"'/keyfile@  keyFile:  '"$KEYPATH"'/keyfile\n  javascriptEnabled:  true@g' /etc/mongod.conf
 sudo systemctl restart mongod
+                            </code></pre>
+                        </div>
+
+                        <div id="configRS" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="configRSCheckbox">
+                                <label class="form-check-label" for="configRSCheckbox">Config Replica Set</label>
+                            </div>
+                            <div>
+                                <label for="configRSName" class="form-label">Replica Set Name</label>
+                                <input type="text" class="form-control" id="configRSName" value="mongodb-is-awesome"
+                                    placeholder="Replica Set Name">
+                            </div>
+                            <pre><code>
+export RSNAME="mongodb-is-awesome"
+sudo sed -i 's@#replication.*$@replication:\n  replSetName: '"$RSNAME"'@g' /etc/mongod.conf
+sudo systemctl restart mongod
+                            </code></pre>
+                        </div>
+                        <div id="replicaSet" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="replicaSetCheckbox">
+                                <label class="form-check-label" for="replicaSetCheckbox">Initiate Replica Set</label>
+                            </div>
+                            <div>
+                                <label for="replicaSetDocument" class="form-label">Replica Set Document</label>
+                                <textarea class="form-control"
+                                    id="replicaSetDocument">
+{
+    _id: "mongodb-is-awesome",
+    version: 1,
+    members: [
+        { _id: 0, host : "exmma1.mdbrecruit.net:27017" },
+        { _id: 1, host : "exmma2.mdbrecruit.net:27017" },
+        { _id: 2, host : "exmma3.mdbrecruit.net:27017" }
+    ]
+}</textarea>
+                            </div>
+                            <pre><code>
+mongo --eval 'rs.initiate({
+    _id: "mongodb-is-awesome",
+    version: 1,
+    members: [
+        { _id: 0, host : "exmma1.mdbrecruit.net:27017" },
+        { _id: 1, host : "exmma2.mdbrecruit.net:27017" },
+        { _id: 2, host : "exmma3.mdbrecruit.net:27017" }
+    ]
+})'
+                            </code></pre>
+                        </div>
+                        <pre><code>
+sudo mkdir /var/run/mongodb
+sudo chown mongodb:mongodb /var/run/mongodb
+
+# configuration for the mongod instances
+cat << 'ENDCONF' | sudo tee /etc/mongod.conf
+systemLog:
+  destination: file
+  logAppend: false
+  path: /data/logs/mongodb.log
+storage:
+  dbPath: /data/db
+  wiredTiger:
+    engineConfig:
+       cacheSizeGB: 1 
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod.pid
+  timeZoneInfo: /usr/share/zoneinfo
+net:
+  port: 27017
+  bindIpAll: true
+security:
+  authorization: enabled
+  keyFile: /etc/mongodb.key
+replication:
+  replSetName: myRS
+ENDCONF
+
+sudo service mongod restart
+
+sudo systemctl enable mongod
 
 </code></pre>
-                        Enable TLS
+
+
+                    <div id="generateTLSCert" class="module mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="generateTLSCertCheckbox">
+                            <label class="form-check-label" for="generateTLSCertCheckbox">Generate TLS Cert</label>
+                        </div>
+                        <div>
+                            <label for="generateTLSCertHostList" class="form-label">Host list</label>
+                            <input type="text" class="form-control" id="generateTLSCertHostList"
+                                value="mma1.mdbrecruit.net mma2.mdbrecruit.net mma3.mdbrecruit.net"
+                                placeholder="host list of the servers">
+                        </div>
+                        <div>
+                            <label for="generateTLSCertAltName" class="form-label">subjectAltName (e.g. load balancer domain)</label>
+                            <input type="text" class="form-control" id="generateTLSCertAltName"
+                                value="mma.mdbtraining.net"
+                                placeholder="">
+                        </div>
+                        <div>
+                            <label for="generateTLSCertC" class="form-label">City</label>
+                            <input type="text" class="form-control" id="generateTLSCertC"
+                                value="HK"
+                                placeholder="">
+                        </div>
+                        <div>
+                            <label for="generateTLSCertST" class="form-label">State</label>
+                            <input type="text" class="form-control" id="generateTLSCertST"
+                                value="Hong Kong"
+                                placeholder="">
+                        </div>
+                        <div>
+                            <label for="generateTLSCertL" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="generateTLSCertL"
+                                value="Hong Kong"
+                                placeholder="">
+                        </div>
+                        <div>
+                            <label for="generateTLSCertO" class="form-label">Organization</label>
+                            <input type="text" class="form-control" id="generateTLSCertO"
+                                value="MongoDB"
+                                placeholder="">
+                        </div>
+                        <div>
+                            <label for="generateTLSCertOU" class="form-label">Organization Unit</label>
+                            <input type="text" class="form-control" id="generateTLSCertOU"
+                                value="PS"
+                                placeholder="">
+                        </div>
+                        <div>
+                            <label for="generateTLSCertCN" class="form-label">Root Cert CN</label>
+                            <input type="text" class="form-control" id="generateTLSCertCN"
+                                value="rootca.com"
+                                placeholder="">
+                        </div>
+                        
                         <pre><code>
+export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net mma3.mdbrecruit.net)
+export ALTNAME="mma.mdbtraining.net"
+export C=HK
+export ST=Hong Kong
+export L=Hong Kong
+export O=MongoDB
+export OU=PS
+export ROOTCN=rootca.com
+
 # install a newer version of openSSL
 sudo yum install -y openssl11
 
 # create the CA
-openssl11 req -newkey rsa:2048 -new -x509 -sha256 -extensions v3_ca -out ca.cert -keyout ca.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/CN=mylittleca.com" -nodes
+openssl11 req -newkey rsa:2048 -new -x509 -sha256 -extensions v3_ca -out ca.cert -keyout ca.key -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/CN=${ROOTCN}" -nodes
 
 # Allow copying of extensions from CSRs to the resulting certificates
 sudo sed -i 's/^# copy_extensions = copy.*/copy_extensions = copy/' /etc/pki/tls/openssl.cnf
@@ -562,32 +797,54 @@ sudo /bin/rm -f /etc/pki/CA/serial*
 sudo touch /etc/pki/CA/index.txt
 echo 1000 | sudo tee  /etc/pki/CA/serial
 
-host0="om-1-witty-mayfly.mdbtraining.net"
-host1="om-2-witty-mayfly.mdbtraining.net"
-host2="om-3-witty-mayfly.mdbtraining.net"
-loadbalancer="witty-mayfly-om.mdbtraining.net"
-clusterdesc="OpsManager"
-
-# Generate the key files and CSRs for each host, include the SAN for the load balancer and the host itself
-openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${loadbalancer},DNS:${host0}" -sha256 -out ${host0}.csr -keyout ${host0}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=${clusterdesc}/CN=${host0}"
-openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${loadbalancer},DNS:${host1}" -sha256 -out ${host1}.csr -keyout ${host1}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=${clusterdesc}/CN=${host1}"
-openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${loadbalancer},DNS:${host2}" -sha256 -out ${host2}.csr -keyout ${host2}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=${clusterdesc}/CN=${host2}"
-
-# Sign the certificates for each host
-sudo openssl11 ca -notext -in ${host0}.csr -out ${host0}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
-sudo openssl11 ca -notext -in ${host1}.csr -out ${host1}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
-sudo openssl11 ca -notext -in ${host2}.csr -out ${host2}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
-
-# concatenate the private key and the certificate into a PEM file
-cat ${host0}.key ${host0}.cert > ${host0}.pem
-cat ${host1}.key ${host1}.cert > ${host1}.pem
-cat ${host2}.key ${host2}.cert > ${host2}.pem
+for HOST in $HOSTLIST
+do
+openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${ALTNAME},DNS:${HOST}" -sha256 -out ${HOST}.csr -keyout ${HOST}.key -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${HOST}"
+sudo openssl11 ca -notext -in ${HOST}.csr -out ${HOST}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
+cat ${HOST}.key ${HOST}.cert > ${HOST}.pem
+done
 
 # Restore the original settings for openSSL
 sudo sed -i 's/^copy_extensions = copy$/# copy_extensions = copy/' /etc/pki/tls/openssl.cnf
-
 </code></pre>
-                        Ops Manager
+
+cat <<EOF> certs.sh
+    openssl req -newkey rsa:2048 -new -x509 -sha256 -extensions v3_ca -out ca.cert -keyout ca.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/CN=mylittleca.com" -nodes
+    
+    
+    sudo /bin/rm -f /etc/pki/CA/index*
+    sudo /bin/rm -f /etc/pki/CA/serial*
+    
+    sudo touch /etc/pki/CA/index.txt
+    echo 1000 | sudo tee  /etc/pki/CA/serial
+    
+    host="firstnamelastname01.mdbrecruit.net"
+    clusterdesc="firstnamelastnametest"
+    
+    
+    openssl req -newkey rsa:2048 -nodes -new  -sha256 -out \${host}.csr -keyout \${host}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=\${clusterdesc}/CN=\${host}" 
+    
+    sudo openssl ca  -in \${host}.csr -out \${host}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
+    
+    cat firstnamelastname01.mdbrecruit.net.key firstnamelastname01.mdbrecruit.net.cert >> firstnamelastname01.mdbrecruit.net.pem
+    
+    sudo cp ca.cert /etc/pki/tls/certs
+    
+    sudo cp firstnamelastname01.mdbrecruit.net.pem /etc/pki/tls/certs/server.pem
+    
+    EOF
+    scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem certs.sh ec2-user@exfirstnamelastname01.mdbrecruit.net:
+    
+    
+    ssh  -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname01.mdbrecruit.net "export NEWHOSTNAME=firstnamelastname01.mdbrecruit.net;chmod u+x certs.sh && ./certs.sh"
+    
+    scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname01.mdbrecruit.net:/home/ec2-user/ca.cert ca.cert
+    
+    
+    
+
+
+                        Ops Manager automation agent
                         <pre><code>
 curl -OL https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
 sudo rpm -U mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
@@ -600,62 +857,6 @@ sudo systemctl start mongodb-mms-automation-agent.service
     
 </code></pre>
 
-                        Local RS
-                        <pre><code>
-sudo mkfs.xfs /dev/nvme1n1
-grep -q /dev/nvme1n1 /etc/fstab || echo "/dev/nvme1n1       /data         xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
-sudo mkdir /data
-sudo chown mongodb:mongodb /data
-sudo mount /dev/nvme1n1 /data
-sudo mkdir /data/db
-sudo mkdir /data/logs
-sudo chown -R mongodb:mongodb /data
-sudo mkdir /var/run/mongodb
-sudo chown mongodb:mongodb /var/run/mongodb
-
-
-# configuration for the mongod instances
-cat << 'ENDCONF' | sudo tee /etc/mongod.conf
-systemLog:
-    destination: file
-    logAppend: false
-    path: /data/logs/mongodb.log
-storage:
-    dbPath: /data/db
-    wiredTiger:
-    engineConfig:
-        cacheSizeGB: 1 
-processManagement:
-    fork: true
-    pidFilePath: /var/run/mongodb/mongod.pid
-    timeZoneInfo: /usr/share/zoneinfo
-net:
-    port: 27017
-    bindIpAll: true
-security:
-    authorization: enabled
-    keyFile: /etc/mongodb.key
-replication:
-    replSetName: myRS
-ENDCONF
-
-
-# Key for replica set member authentication
-cat << 'ENDKEY' | sudo tee /etc/mongodb.key
-wAwXJcO1IcfqK2attHZTrTp50TL4lbv8iHxzM0GjqjgpprV9xq+VE8H9hd0VqWgd
-ENDKEY
-sudo chown mongodb:mongodb /etc/mongodb.key
-sudo chmod 400 /etc/mongodb.key
-
-sudo service mongod restart
-sleep 10
-mongo --eval "rs.initiate()"
-sleep 10
-
-sudo systemctl enable mongod
-
-mongo --eval "db.createUser({user:'mongoadmin',pwd: 'passwordone',roles:[{db:'admin',role:'root'}]})" admin
-</code></pre>
 
                         <div class="mb-3">
                             <label for="finalTextarea" class="form-label">Script</label>
@@ -674,12 +875,6 @@ mongo --eval "db.createUser({user:'mongoadmin',pwd: 'passwordone',roles:[{db:'ad
                 <div id="collapsePerformance" class="accordion-collapse collapse" aria-labelledby="headingPerformance"
                     data-bs-parent="#accordionMain">
                     <div class="accordion-body">
-                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the
-                        collapse plugin adds the appropriate classes that we use to style each element. These classes
-                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
-                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
-                        does limit overflow.
                     </div>
                 </div>
             </div>
@@ -687,18 +882,14 @@ mongo --eval "db.createUser({user:'mongoadmin',pwd: 'passwordone',roles:[{db:'ad
                 <h2 class="accordion-header" id="headingThree">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Accordion Item #3
+                        mongosh command
                     </button>
                 </h2>
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                     data-bs-parent="#accordionMain">
                     <div class="accordion-body">
-                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the
-                        collapse plugin adds the appropriate classes that we use to style each element. These classes
-                        control the overall appearance, as well as the showing and hiding via CSS transitions. You can
-                        modify any of this with custom CSS or overriding our default variables. It's also worth noting
-                        that just about any HTML can go within the <code>.accordion-body</code>, though the transition
-                        does limit overflow.
+                        mongo --eval "db.createUser({user:'mongoadmin',pwd:
+                        'passwordone',roles:[{db:'admin',role:'root'}]})" admin
                     </div>
                 </div>
             </div>
