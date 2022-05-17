@@ -238,7 +238,8 @@ aws configure set default.region $REGION
 export VPCID=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" | jq -r '.Vpcs[0].VpcId')
 aws ec2 create-security-group --description "$SG_DESCRIPTION" --group-name "$SG_NAME" --vpc-id $VPCID
 export SECURITYGROUP=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=$SG_NAME" | jq -r '.SecurityGroups[0].GroupId')
-aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 0-63353 --source-group $SECURITYGROUP --protocol tcp  
+aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 0-63353 --source-group $SECURITYGROUP --protocol tcp 
+aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 22 --cidr 0.0.0.0/0 --protocol tcp
 
 export AMI=$(aws ec2 describe-images --filters "Name=name,Values=$IMG_NAME" | jq -r '.Images[0].ImageId')
 aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
@@ -293,9 +294,9 @@ aws ec2 run-instances --image-id $AMI \
                             <pre><code>
 export DOMAIN="mdbrecruit.net"
 export HOSTEDZONE="Z2S69UIBKD4GJX"
-export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .privateip ')
+export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma") )| .privateip ')
 export INTERNAL_SUBDOMAIN="mma"
-export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .publicip ')
+export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma") )| .publicip ')
 export EXTERNAL_SUBDOMAIN="exmma"
 
 HOSTNUM=1
@@ -577,7 +578,7 @@ sudo yum install -y mongodb-org
                             <pre><code>
 echo "[mongodb-enterprise-5.0]
 name=MongoDB Enterprise Repository
-baseurl=https://repo.mongodb.com/yum/amazon/2/mongodb-enterprise/5.0/$basearch/
+baseurl=https://repo.mongodb.com/yum/amazon/2/mongodb-enterprise/5.0/\$basearch/
 gpgcheck=1
 enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc" | sudo tee /etc/yum.repos.d/mongodb-enterprise-5.0.repo 
@@ -610,18 +611,38 @@ sudo yum install -y mongodb-enterprise
                                     placeholder="Key Path">
                             </div>
                             <pre><code>
-export PATH="/data"          
-export DBPATH="$PATH/db"
-export LOGPATH="$PATH/logs"
-export KEYPATH="$PATH/keys"
+export DATAPATH="/data"          
+export DBPATH="$DATAPATH/db"
+export LOGPATH="$DATAPATH/logs"
+export KEYPATH="$DATAPATH/keys"
 
 sudo mkdir -p $DBPATH
 sudo mkdir -p $LOGPATH
 sudo mkdir -p $KEYPATH
 
-openssl rand -base64 756 > keyfile
+cat << 'ENDKEY' | sudo tee keyfile
+/1teDs8E1y0rlRtOxi6FIgyEFx8S58LkwfE5NpLXYJl1MnCKEeziz3py0JMWcZmK
+ZvZaOerfh1K1u6GB5xzErWq7qVwQJl6NCLilfpHwJvEvLpc2XlUCS/hrUwmuQeRZ
+4DN01Ka3yGnWojpyGHUImoHY9TBTUKOJ7AMaFV4Yq8Of3scASXcbZhhD0ih/MegD
+DcfUxX0wMmnwNCA7g96lMyyNWSGlVCgUsgC3ih6fgoQbK8XNb7IVzG8xolQvxYKq
+kEqKI3VifwSgTcUQRpu9FF137QtwLW6NcrKiNOhMN26zVWJsfTGqQZ0XC07wej6R
+sF9oBHMSub7q3zR6J+MzboA3yWTNqgCymEv9Qx7lviTQzPHpNIEWAot89eeXWdY0
+L1Sxy21XyWC6ZhgnfSoVJR1LJiE+r5B8iMewqXKMQ1dQaqsS57qg1pX7vzglwMeM
+ZK2iAOdfdW0ERpp/bwRNT42sePmxxWBLQao8D+RVLbayaRbOxFrnQqLzUYQfKhDN
+2yivoAKPXvKtcC9Fns4Ojxetyb/wWFrd7j0oGwV1g5ShJbJSg8LDw6HXpriR33L+
+6ILuObUmyVlkXOT6BkUWeabKSptpyvfNlhGALGMiXPVA9KPz47HyQLmAy15tkYRH
+9s4b2LdT2mKJJsGpsnJro9Kp2QHl2ClWZuLw22mofNtEiE5XeOlv53Wx08jFBrLE
+kExLjESf54L+BqD3UPVsyESegAujWLYEJK8fYJ/MA1JnOL7SZEEJwMUb1U+q+eav
+KrmMj+MAag3hU5cNTIK2C6RgNGV9NDNhyfe2Eu6WBU9qzzMEimbgC7824Qusk/kg
+1qlk+OVly8M9woJ/S01W3iw2yU/GX7JLT/hV/kxxZKphQh4KdxKta4f9n8+Aybiz
+tAJvsvt2Lp90rFkrjJpkF3qUWpfH8kzIUppnsZIuH5Y4yVz1cr+CrSacmUA82TqN
+kMirO+dCmuVH87naMzdoAbsiu2UgIYJ90m6Fc7V1ch3C9WtQ
+ENDKEY
+
+#openssl rand -base64 756 > keyfile
+sudo mv keyfile "$KEYPATH"
 sudo chmod 400 $KEYPATH/keyfile
-sudo chown -R mongod:mongod $PATH
+sudo chown -R mongod:mongod $DATAPATH
 
 sudo sed -i 's@\s\sdbPath:.*$@  dbPath: '"$DBPATH"'@g' /etc/mongod.conf
 sudo sed -i 's@\s\spath:.*$@  path: '"$LOGPATH"'/mongod.log@g' /etc/mongod.conf
@@ -857,6 +878,9 @@ sudo systemctl start mongodb-mms-automation-agent.service
     
 </code></pre>
 
+<pre><code>
+    docker run -it --name container_name --mount src=/Users/mma/Documents/Docker/vol/test,target=/data,type=bind registry.access.redhat.com/ubi8/ubi bash
+</code></pre>
 
                         <div class="mb-3">
                             <label for="finalTextarea" class="form-label">Script</label>
