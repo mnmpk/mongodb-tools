@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div class="container px-4 py-5" id="icon-grid">
+    <!--div class="container px-4 py-5" id="icon-grid">
         <h2 class="pb-2 border-bottom">Menu</h2>
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
@@ -81,21 +81,20 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
     <div class="container px-4 py-5" id="main-content">
         <div class="accordion" id="accordionMain">
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingInstallation">
+                <h2 class="accordion-header" id="headingPrerequisite">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseInstallation" aria-expanded="true"
-                        aria-controls="collapseInstallation">
-                        Installation
+                        data-bs-target="#collapsePrerequisite" aria-expanded="true"
+                        aria-controls="collapsePrerequisite">
+                        Prerequisite tools
                     </button>
                 </h2>
-                <div id="collapseInstallation" class="accordion-collapse collapse show"
+                <div id="collapsePrerequisite" class="accordion-collapse collapse show"
                     aria-labelledby="headingInstallation" data-bs-parent="#accordionMain">
                     <div class="accordion-body">
-                        <h3>Prerequisite tools</h3>
                         <div id="installJq" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="installJqCheckbox">
@@ -111,7 +110,27 @@
                             </div>
                             <pre><code>sudo yum install mongocli -y</code></pre>
                         </div>
-                        <h3>AWS</h3>
+                        <div id="installMongosh" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="installMongoCliCheckbox">
+                                <label class="form-check-label" for="installMongoCliCheckbox">Install MongoDB sh
+                                    </label>
+                            </div>
+                            <pre><code>sudo yum install mongosh -y</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingAWS">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAWS" aria-expanded="false" aria-controls="collapseAWS">
+                        AWS
+                    </button>
+                </h2>
+                <div id="collapseAWS" class="accordion-collapse collapse" aria-labelledby="headingAWS"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
                         <div id="installAwsCli" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="installAwsCliCheckbox">
@@ -340,8 +359,19 @@ let "HOSTNUM=HOSTNUM+1"
 done
                             </code></pre>
                         </div>
-
-                        <h3>AWS</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingProductionNotes">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseProductionNotes" aria-expanded="false" aria-controls="collapseProductionNotes">
+                        Production Notes
+                    </button>
+                </h2>
+                <div id="collapseProductionNotes" class="accordion-collapse collapse" aria-labelledby="headingProductionNotes"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
                         <div id="productionNotes" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="productionNotesCheckbox">
@@ -364,22 +394,28 @@ done
                                 <input type="text" class="form-control" id="productionNotesKeyPath"
                                     value="~/.ssh/jlp-tradecraft.pem" placeholder="Key path">
                             </div>
+                            <div>
+                                <label for="dataDrivePath" class="form-label">Data drive path</label>
+                                <input type="text" class="form-control" id="dataDrivePath"
+                                    value="/dev/xvdb" placeholder="Data drive path">
+                            </div>
                             <pre><code>
 export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
 export PREFIX="ex"
 export KEYPATH="~/.ssh/jlp-tradecraft.pem"
+export DATADRIVEPATH="/dev/xvdb"
 
 cat << 'ENDPRODNOTES' > prodnotes.sh
 echo sudo hostnamectl set-hostname $NEWHOSTNAME
 sudo hostnamectl set-hostname $NEWHOSTNAME
 
-sudo mkfs -t xfs /dev/xvdb
+sudo mkfs -t xfs $DATADRIVEPATH
 sudo mkdir /data
-sudo mount /dev/xvdb /data
+sudo mount $DATADRIVEPATH /data
 
 
 
-grep -q /dev/xvdb /etc/fstab || echo "/dev/xvdb       /data          xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
+grep -q $DATADRIVEPATH /etc/fstab || echo "$DATADRIVEPATH       /data          xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
 sudo findmnt --verify 
 
 
@@ -440,7 +476,7 @@ case $1 in
     fi
 
     #Set Readahead for Data Disk
-    blockdev --setra 8 /dev/xvdb
+    blockdev --setra 8 $DATADRIVEPATH
     unset re
     unset thp_path
     ;;
@@ -462,12 +498,24 @@ ENDPRODNOTES
 for HOST in $HOSTLIST
 do
 scp -o StrictHostKeyChecking=no -i ${KEYPATH} prodnotes.sh ec2-user@${PREFIX}${HOST}:
-ssh  -o StrictHostKeyChecking=no -i ${KEYPATH} ec2-user@${PREFIX}${HOST} "export NEWHOSTNAME=${HOST};chmod u+x prodnotes.sh && ./prodnotes.sh"
+ssh  -o StrictHostKeyChecking=no -i ${KEYPATH} ec2-user@${PREFIX}${HOST} "export NEWHOSTNAME=${HOST};export DATADRIVEPATH=${DATADRIVEPATH};chmod u+x prodnotes.sh && ./prodnotes.sh"
 done
 
                             </code></pre>
                         </div>
-
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingMountDisk">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseMountDisk" aria-expanded="false" aria-controls="collapseMountDisk">
+                        Mount Disk
+                    </button>
+                </h2>
+                <div id="collapseMountDisk" class="accordion-collapse collapse" aria-labelledby="headingMountDisk"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
                         <div id="mountDisk" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="mountDiskCheckbox">
@@ -480,6 +528,19 @@ grep -q /dev/nvme1n1 /etc/fstab || echo "/dev/nvme1n1       /data         xfs   
 sudo mount /dev/nvme1n1 /data
                             </code></pre>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingAutomationAgent">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAutomationAgent" aria-expanded="false" aria-controls="collapseAutomationAgent">
+                        Automation agent
+                    </button>
+                </h2>
+                <div id="collapseAutomationAgent" class="accordion-collapse collapse" aria-labelledby="headingAutomationAgent"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
                         <div id="automationAgents" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="automationAgentsCheckbox">
@@ -504,6 +565,18 @@ sudo mount /dev/nvme1n1 /data
                                     value="~/.ssh/jlp-tradecraft.pem" placeholder="Key path">
                             </div>
                             <div>
+                                <label for="automationAgentLink" class="form-label">Link</label>
+                                <input type="text" class="form-control" id="automationAgentLink"
+                                    value="https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm"
+                                    placeholder="Link to download the automation agent binary">
+                            </div>
+                            <div>
+                                <label for="automationAgentFileName" class="form-label">File Name</label>
+                                <input type="text" class="form-control" id="automationAgentFileName"
+                                    value="mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm"
+                                    placeholder="The downloded agent file name">
+                            </div>
+                            <div>
                                 <label for="automationAgentsGroupId" class="form-label">Group / Project Id</label>
                                 <input type="text" class="form-control" id="automationAgentsGroupId" value="623dd817d4d33441855dfd5e"
                                     placeholder="The group / project Id from Cloud/Ops Manager">
@@ -517,13 +590,16 @@ sudo mount /dev/nvme1n1 /data
 export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
 export PREFIX="ex"
 export KEYPATH="~/.ssh/jlp-tradecraft.pem"
+export LINK=https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
+export FILENAME=mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
 export GROUPID="623dd817d4d33441855dfd5e"
 export AGENTSAPIKEY="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
 
-cat << 'ENDSCRIPT' > setupagent.sh
-curl -OL https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-6.3.0.5643-1.x86_64.rhel7.rpm
 
-sudo rpm -U mongodb-mms-automation-agent-manager-6.3.0.5643-1.x86_64.rhel7.rpm
+cat << 'ENDSCRIPT' > setupagent.sh
+curl -OL $LINK
+
+sudo rpm -U $FILENAME
 
 mmsGroupId=$GROUPID
 
@@ -551,7 +627,19 @@ done
         
                             </code></pre>
                         </div>
-
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingInstallation">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseInstallation" aria-expanded="false" aria-controls="collapseInstallation">
+                        Installation
+                    </button>
+                </h2>
+                <div id="collapseInstallation" class="accordion-collapse collapse" aria-labelledby="headingInstallation"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
                         <div id="installMongodCommunity" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="installMongodCommunityCheckbox">
@@ -585,6 +673,19 @@ gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc" | sudo tee /etc/yum.re
 sudo yum install -y mongodb-enterprise
                             </code></pre>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingConfig">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseConfig" aria-expanded="false" aria-controls="collapseConfig">
+                        Config MongoDB
+                    </button>
+                </h2>
+                <div id="collapseConfig" class="accordion-collapse collapse" aria-labelledby="headingConfig"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
                         <div id="configMongod" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="configMongodCheckbox">
@@ -737,7 +838,19 @@ sudo systemctl enable mongod
 
 </code></pre>
 
-
+</div>
+</div>
+</div>
+<div class="accordion-item">
+<h2 class="accordion-header" id="headingTLS">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapseTLS" aria-expanded="false" aria-controls="collapseTLS">
+        TLS
+    </button>
+</h2>
+<div id="collapseTLS" class="accordion-collapse collapse" aria-labelledby="headingTLS"
+    data-bs-parent="#accordionMain">
+    <div class="accordion-body">
                     <div id="generateTLSCert" class="module mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="generateTLSCertCheckbox">
@@ -828,64 +941,14 @@ done
 # Restore the original settings for openSSL
 sudo sed -i 's/^copy_extensions = copy$/# copy_extensions = copy/' /etc/pki/tls/openssl.cnf
 </code></pre>
-
-cat <<EOF> certs.sh
-    openssl req -newkey rsa:2048 -new -x509 -sha256 -extensions v3_ca -out ca.cert -keyout ca.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/CN=mylittleca.com" -nodes
-    
-    
-    sudo /bin/rm -f /etc/pki/CA/index*
-    sudo /bin/rm -f /etc/pki/CA/serial*
-    
-    sudo touch /etc/pki/CA/index.txt
-    echo 1000 | sudo tee  /etc/pki/CA/serial
-    
-    host="firstnamelastname01.mdbrecruit.net"
-    clusterdesc="firstnamelastnametest"
-    
-    
-    openssl req -newkey rsa:2048 -nodes -new  -sha256 -out \${host}.csr -keyout \${host}.key -subj "/C=GB/ST=Scotland/L=Glasgow/O=MongoDB/OU=\${clusterdesc}/CN=\${host}" 
-    
-    sudo openssl ca  -in \${host}.csr -out \${host}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
-    
-    cat firstnamelastname01.mdbrecruit.net.key firstnamelastname01.mdbrecruit.net.cert >> firstnamelastname01.mdbrecruit.net.pem
-    
-    sudo cp ca.cert /etc/pki/tls/certs
-    
-    sudo cp firstnamelastname01.mdbrecruit.net.pem /etc/pki/tls/certs/server.pem
-    
-    EOF
-    scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem certs.sh ec2-user@exfirstnamelastname01.mdbrecruit.net:
-    
-    
-    ssh  -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname01.mdbrecruit.net "export NEWHOSTNAME=firstnamelastname01.mdbrecruit.net;chmod u+x certs.sh && ./certs.sh"
-    
-    scp -o StrictHostKeyChecking=no -i ~/.ssh/jlp-tradecraft.pem ec2-user@exfirstnamelastname01.mdbrecruit.net:/home/ec2-user/ca.cert ca.cert
-    
-    
-    
+ </div>
 
 
-                        Ops Manager automation agent
-                        <pre><code>
-curl -OL https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
-sudo rpm -U mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
-
-sudo sed -i 's/mmsGroupId=/mmsGroupId=<Insert Group Id>/g' /etc/mongodb-mms/automation-agent.config
-
-sudo sed -i 's/mmsApiKey=/mmsApiKey=<Insert Agent API Key Here>/g' /etc/mongodb-mms/automation-agent.config
-
-sudo systemctl start mongodb-mms-automation-agent.service
-    
-</code></pre>
 
 <pre><code>
     docker run -it --name container_name --mount src=/Users/mma/Documents/Docker/vol/test,target=/data,type=bind registry.access.redhat.com/ubi8/ubi bash
 </code></pre>
 
-                        <div class="mb-3">
-                            <label for="finalTextarea" class="form-label">Script</label>
-                            <textarea class="form-control" id="finalTextarea" rows="10"></textarea>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -918,6 +981,10 @@ sudo systemctl start mongodb-mms-automation-agent.service
                 </div>
             </div>
         </div>
+    <div class="mb-3">
+        <label for="finalTextarea" class="form-label">Script</label>
+        <textarea class="form-control" id="finalTextarea" rows="10"></textarea>
+    </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
