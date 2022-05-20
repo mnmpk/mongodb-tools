@@ -2,7 +2,7 @@
 ## Getting start
 
 1. Create Atlas Cluster
-1.1. Create database & collection (search.data)
+   1.1. Create database & collection (search.data)
 1.2. Create Search Index
 2. Create Realm application
 2.1. Create Realm function
