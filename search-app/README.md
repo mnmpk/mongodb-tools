@@ -2,11 +2,11 @@
 ## Getting start
 
 1. Create Atlas Cluster
-   1.1. Create database & collection (search.data)
-1.2. Create Search Index
+   - Create database & collection (search.data)
+   - Create Search Index
 2. Create Realm application
-2.1. Create Realm function
-2.2. Create HTTPS endpoints
+   - Create Realm function
+   - Create HTTPS endpoints
 
 ## 1. Create Atlas Cluster
 Create your Atlas cluster and grant accessto an account
