@@ -1,20 +1,20 @@
 # search-app
 ## Getting start
 
-1) Create Atlas Cluster
-1.1) Create database & collection (search.data)
-1.2) Create Search Index
-2) Create Realm application
-2.1) Create Realm function
-2.2) Create HTTPS endpoints
+1. Create Atlas Cluster
+1.1. Create database & collection (search.data)
+1.2. Create Search Index
+2. Create Realm application
+2.1. Create Realm function
+2.2. Create HTTPS endpoints
 
-## 1) Create Atlas Cluster
+## 1. Create Atlas Cluster
 Create your Atlas cluster and grant accessto an account
 Cluster url: atlasSearch.uskpz.mongodb.net
 Database user: admin
 Database password: admin
 
-### 1.1) Create database & collection
+### 1.1. Create database & collection
 Load your data into the collection (search.data) with following schema
 ```
 {
@@ -28,7 +28,7 @@ import the data to your cluster
 ```
 mongoimport --uri "mongodb+srv://<Database user>:<Database password>@<Cluster url>" --db search -c data --file=data.json
 ```
-### 1.2) Create Search Index
+### 1.2. Create Search Index
 Create Search Index for the collection
 Geo Index on location field & multi language index on content field
 ```
@@ -70,11 +70,11 @@ Geo Index on location field & multi language index on content field
     }
   }
 ```
-## 2) Create Realm Application
+## 2. Create Realm Application
 Create the Realm application and enable one of the authentication provider, 
 For API Keys copy the API Key to the index.html
 
-### 2.1) Realm function
+### 2.1. Realm function
 Create the Realm function that will run an aggregation query based on the request parameters
 ```
 // This function is the endpoint's request handler.
@@ -163,10 +163,10 @@ exports = function(query) {
     return context.services.get("atlas-search").db("search").collection("data").aggregate(agg_pipeline);
 };
 ```
-### 2.2) Create HTTPS endpoint
+### 2.2. Create HTTPS endpoint
 Create the HTTPS endpoint that serve requests to run the function
 
-## 3) Update index.html
+## 3. Update index.html
 
 Application Id: search-application-hhpfp
 API Key: HSinvK2vBWW67iyKzXnhfCqyRNirxm4l7FiT4g3rMn3NJN3T5JACnAFSF4zzFLWy
