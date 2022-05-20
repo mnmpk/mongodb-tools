@@ -7,6 +7,7 @@
 2. Create Realm application
    - Create Realm function
    - Create HTTPS endpoints
+3. Update index.html
 
 ## 1. Create Atlas Cluster
 Create your Atlas cluster and grant accessto an account
@@ -168,5 +169,5 @@ Create the HTTPS endpoint that serve requests to run the function
 
 ## 3. Update index.html
 
-Application Id: search-application-hhpfp
-API Key: HSinvK2vBWW67iyKzXnhfCqyRNirxm4l7FiT4g3rMn3NJN3T5JACnAFSF4zzFLWy
+- Application Id: search-application-hhpfp
+- API Key: HSinvK2vBWW67iyKzXnhfCqyRNirxm4l7FiT4g3rMn3NJN3T5JACnAFSF4zzFLWy
