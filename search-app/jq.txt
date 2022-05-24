@@ -1,0 +1,4 @@
+cat public_estate.org.json | jq -r '.[] | {
+    "content": .,
+    "location":{"type":"Point","coordinates":[."Estate Map Longitude",."Estate Map Latitude"]}
+    }' > public_estate.json
