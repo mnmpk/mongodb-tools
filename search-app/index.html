@@ -184,6 +184,9 @@
     <div class="row">
       <div class="col-12">
         <h1>Atlas Search Demo</h1>
+        <a target="_blank" href="https://docs.google.com/presentation/d/1O0NebN_weJc8Bu6o-cmwvaQ887znHmtPoDlSrUqrqRU/edit?usp=sharing">Demo slides</a>
+        <a target="_blank" href="Atlas Search.pdf">Demo slides (PDF)</a>
+        <a target="_blank" href="https://github.com/mnmpk/mongodb-tools/tree/main/search-app">Git</a>
       </div>
     </div>
   </div>
@@ -193,35 +196,38 @@
     <div class="row">
       <div class="col-12">
         <form>
-          <div class="mb-3">
-            <label for="search" class="form-label">Search</label>
-            <input id="search" type="text" class="form-control" placeholder="search by keyword">
+          <div class="mb-1 row">
+            <label for="search" class="form-label col-sm-2">Keyword</label>
+            <div class="col-sm-10"><input id="search" type="text" class="form-control" placeholder="search by keyword"></div>
           </div>
-          <div class="mb-3">
-            <label for="fuzzy" class="form-label">Fuzzy</label>
-            <input id="fuzzy" type="number" class="form-control" value="0">
+          <div class="mb-1 row">
+            <label for="fuzzy" class="form-label col-sm-2">Fuzzy</label>
+            <div class="col-sm-10"><input id="fuzzy" type="number" class="form-control" value="0"></div>
           </div>
-          <div class="mb-3">
-            <label for="limit" class="form-label">Limit</label>
-            <input id="limit" type="number" class="form-control" value="10">
+          <div class="mb-1 row">
+            <label for="limit" class="form-label col-sm-2">Limit</label>
+            <div class="col-sm-10"><input id="limit" type="number" class="form-control" value="10"></div>
           </div>
-          <div class="mb-3">
-            <label for="path" class="form-label">Path</label>
-            <input id="path" type="text" class="form-control" value="content">
-            <div class="form-text">wildcard index query will be used if path is empty & none of the below analyzers is selected</div>
+          <div class="mb-1 row">
+            <label for="path" class="form-label col-sm-2">Path</label>
+            <div class="col-sm-10"><input id="path" type="text" class="form-control" value="content">
+            <div class="form-text">wildcard index query will be used if path is empty & none of the below analyzers is selected</div></div>
           </div>
-          <div class="mb-3 form-check">
+          <div class="mb-1 form-check">
             <input type="checkbox" class="form-check-input" id="english">
             <label class="form-check-label" for="english">Use English analyzer</label>
           </div>
-          <div class="mb-3 form-check">
+          <div class="mb-1 form-check">
             <input type="checkbox" class="form-check-input" id="chinese">
             <label class="form-check-label" for="chinese">Use Chinese analyzer</label>
           </div>
-          <div class="mb-3 form-check">
+          <div class="mb-1 form-check">
+            <input type="checkbox" class="form-check-input" id="japanese">
+            <label class="form-check-label" for="Japanese">Use Japanese analyzer</label>
+          </div>
+          <div class="mb-1 form-check">
             <input type="checkbox" class="form-check-input" id="geo">
-            <label class="form-check-label" for="geo">Filter by Geo location</label>
-            <label for="radius" class="form-label">Radius</label>
+            <label class="form-check-label" for="geo">Filter by Geo location, radius</label>
             <input id="radius" type="number" class="form-control" value="20000">
           </div>
         </form>
@@ -265,6 +271,7 @@
       });
       $("#english").change(call);
       $("#chinese").change(call);
+      $("#japanese").change(call);
       $(':input').keyup(function () {
         clearTimeout(timer);
         timer = setTimeout(call, 1000)
@@ -297,7 +304,7 @@
       if (letters || $('#geo').prop('checked')) {
         $("#overlay").fadeIn(300);
         await app.currentUser.refreshCustomData();
-        let query={ "q": letters, "f": fuzzy, "l": limit, "e":$('#english').prop('checked'), "c":$('#chinese').prop('checked') };
+        let query={ "q": letters, "f": fuzzy, "l": limit, "e":$('#english').prop('checked'), "c":$('#chinese').prop('checked'), "j":$('#japanese').prop('checked') };
         if($('#geo').prop('checked')) {
           query.lat=circle.getCenter().lat();
           query.lng=circle.getCenter().lng();

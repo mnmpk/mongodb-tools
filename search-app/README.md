@@ -54,6 +54,11 @@ Geo Index on location field & multi language index on content field
               "analyzer": "lucene.english",
               "searchAnalyzer": "lucene.english",
               "type": "string"
+            },
+            "japanese": {
+              "analyzer": "lucene.japanese",
+              "searchAnalyzer": "lucene.japanese",
+              "type": "string"
             }
           },
           "type": "string"
@@ -79,7 +84,7 @@ exports = function(query) {
     // Data can be extracted from the request as follows:
 
     // Query params, e.g. '?arg1=hello&arg2=world' => {arg1: "hello", arg2: "world"}
-    const {q, f, lat, lng, r, l, e, c, p} = query;
+    const {q, f, lat, lng, r, l, e, c, j, p} = query;
 
     // Headers, e.g. {"Content-Type": ["application/json"]}
     //const contentTypes = headers["Content-Type"];
@@ -119,7 +124,10 @@ exports = function(query) {
     if(c){
       paths.push({"value": 'content', "multi": "chinese"});
     }
-    if(!p && !e && !c){
+    if(j){
+      paths.push({"value": 'content', "multi": "japanese"});
+    }
+    if(!p && !e && !c && !j){
       paths.push({'wildcard': '*'});
     }
     if(q){
@@ -167,8 +175,8 @@ exports = function(query) {
     ];
     //const results =context.services.get("atlas-search").db("search").collection("data").findOne();
     const results = context.services.get("atlas-search").db("search").collection("data").aggregate(agg_pipeline);
-    console.log("params:{q:\""+q+"\", f: "+f+", lat:"+lat+", lng:"+lng+", r:"+r+", l:"+l+", c:"+c+", e:"+e+", p:"+p+"}");
-    return results;
+    console.log("params:{q:\""+q+"\", f: "+f+", lat:"+lat+", lng:"+lng+", r:"+r+", l:"+l+", c:"+c+", j:"+j+", e:"+e+", p:"+p+"}");
+    return results; 
 };
 ```
 ### 2.2. Create HTTPS endpoint
