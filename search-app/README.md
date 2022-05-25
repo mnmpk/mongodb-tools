@@ -19,11 +19,25 @@ Database password: admin
 Load your data into the collection (search.data) with following schema
 ```
 {
-    "location":{"type":"Point","coordinates":[<longitude>,<latitude>]}, 
+  "title": "Search Data",
+  "description": "An entry for search",
+  "type": "object",
+  "properties": {
+    "_id": {
+      "description": "The unique identifier",
+      "type": "ObjectId"
+    },
+    "location": {
+      "description": "The location of the item for GEO search",
+      "type": "object"
+    },
     "content": {
-        <key>:<value>
-    }
+      "description": "The content for search",
+      "type": ["object","string"]
+    },
+  "required": [ "_id", "content" ]
 }
+
 ```
 import the data to your cluster
 ```
