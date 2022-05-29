@@ -12,8 +12,8 @@
 ## 1. Create Atlas Cluster
 Create your Atlas cluster and grant accessto an account
 Cluster url: atlasSearch.uskpz.mongodb.net
-Database user: admin
-Database password: admin
+Database user: search
+Database password: search
 
 ### 1.1. Create database & collection
 Load your data into the collection (search.data) with following schema
@@ -42,7 +42,7 @@ Load your data into the collection (search.data) with following schema
 import the data to your cluster
 ```
 mongoimport --uri "mongodb+srv://<Database user>:<Database password>@<Cluster url>" --db search -c data --file=data.json
-mongoimport --uri "mongodb+srv://admin:admin@atlasSearch.uskpz.mongodb.net" --db search -c data --file=public_estate.json
+mongoimport --uri "mongodb+srv://search:search@atlasSearch.uskpz.mongodb.net" --db search -c data --file=public_estate.json
 ```
 ### 1.2. Create Search Index
 Create Search Index for the collection
