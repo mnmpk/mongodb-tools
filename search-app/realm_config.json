@@ -1,0 +1,8 @@
+{
+    "app_id": "search-app-zznhw",
+    "config_version": 20210101,
+    "name": "search-app",
+    "location": "SG",
+    "provider_region": "aws-ap-southeast-1",
+    "deployment_model": "LOCAL"
+}
