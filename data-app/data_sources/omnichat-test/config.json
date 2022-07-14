@@ -1,0 +1,10 @@
+{
+    "name": "omnichat-test",
+    "type": "mongodb-atlas",
+    "config": {
+        "clusterName": "omnichat-test",
+        "readPreference": "primary",
+        "wireProtocolEnabled": false
+    },
+    "version": 1
+}
