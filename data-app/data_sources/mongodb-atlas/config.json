@@ -1,8 +1,8 @@
 {
-    "name": "omnichat-test",
+    "name": "mongodb-atlas",
     "type": "mongodb-atlas",
     "config": {
-        "clusterName": "omnichat-test",
+        "clusterName": "AtlasSearch",
         "readPreference": "primary",
         "wireProtocolEnabled": false
     },

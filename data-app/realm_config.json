@@ -1,8 +1,8 @@
 {
-    "app_id": "data-pkpse",
+    "app_id": "data-app-ovqkg",
     "config_version": 20210101,
-    "name": "data",
-    "location": "US-VA",
-    "provider_region": "aws-us-east-1",
-    "deployment_model": "GLOBAL"
+    "name": "data-app",
+    "location": "SG",
+    "provider_region": "aws-ap-southeast-1",
+    "deployment_model": "LOCAL"
 }
