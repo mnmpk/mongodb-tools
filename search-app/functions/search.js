@@ -93,8 +93,8 @@ exports = function(query) {
           '$limit': parseInt(l)
         }
     ];
-    //const results =context.services.get("atlas-search").db("search").collection("data").findOne();
-    const results = context.services.get("atlas-search").db("search").collection("data").aggregate(agg_pipeline);
+    //const results =context.services.get("mongodb-atlas").db("search").collection("data").findOne();
+    const results = context.services.get("mongodb-atlas").db("search").collection("data").aggregate(agg_pipeline);
     console.log("params:{q:\""+q+"\", f: "+f+", lat:"+lat+", lng:"+lng+", r:"+r+", l:"+l+", c:"+c+", j:"+j+", e:"+e+", p:"+p+"}");
     return results; 
 };
