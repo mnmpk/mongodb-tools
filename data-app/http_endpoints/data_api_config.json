@@ -9,5 +9,5 @@
     "secret_name": "",
     "fetch_custom_user_data": false,
     "create_user_on_auth": false,
-    "return_type": "EJSON"
+    "return_type": "JSON"
 }
