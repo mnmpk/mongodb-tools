@@ -214,6 +214,10 @@
             <div class="form-text">wildcard index query will be used if path is empty & none of the below analyzers is selected</div></div>
           </div>
           <div class="mb-1 form-check">
+            <input type="checkbox" class="form-check-input" id="keyword">
+            <label class="form-check-label" for="keyword">Use Keyword analyzer</label>
+          </div>
+          <div class="mb-1 form-check">
             <input type="checkbox" class="form-check-input" id="english">
             <label class="form-check-label" for="english">Use English analyzer</label>
           </div>
@@ -252,8 +256,8 @@
 
 
   <script>
-    const userAPIKey = "";
-    const app = new Realm.App({ id: "search-app-zznhw" });
+    const userAPIKey = "HSinvK2vBWW67iyKzXnhfCqyRNirxm4l7FiT4g3rMn3NJN3T5JACnAFSF4zzFLWy";
+    const app = new Realm.App({ id: "search-application-zznhw" });
     let timer = null;
     $(document).ready(function () {
       init();
@@ -269,6 +273,7 @@
         }
         call();
       });
+      $("#keyword").change(call);
       $("#english").change(call);
       $("#chinese").change(call);
       $("#japanese").change(call);
@@ -304,7 +309,7 @@
       if (letters || $('#geo').prop('checked')) {
         $("#overlay").fadeIn(300);
         await app.currentUser.refreshCustomData();
-        let query={ "q": letters, "f": fuzzy, "l": limit, "e":$('#english').prop('checked'), "c":$('#chinese').prop('checked'), "j":$('#japanese').prop('checked') };
+        let query={ "q": letters, "f": fuzzy, "l": limit, "k":$('#keyword').prop('checked'), "e":$('#english').prop('checked'), "c":$('#chinese').prop('checked'), "j":$('#japanese').prop('checked') };
         if($('#geo').prop('checked')) {
           query.lat=circle.getCenter().lat();
           query.lng=circle.getCenter().lng();
