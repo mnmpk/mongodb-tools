@@ -4,7 +4,7 @@ exports = function(query) {
     // Data can be extracted from the request as follows:
 
     // Query params, e.g. '?arg1=hello&arg2=world' => {arg1: "hello", arg2: "world"}
-    const {q, f, lat, lng, r, l, e, c, j, p} = query;
+    const {q, f, lat, lng, r, l, k, e, c, j, p} = query;
 
     // Headers, e.g. {"Content-Type": ["application/json"]}
     //const contentTypes = headers["Content-Type"];
@@ -35,29 +35,39 @@ exports = function(query) {
       };
     }
     let paths = [];
-    if(p){
-      paths.push(p);
-    }
-    if(e){
-      paths.push({"value": 'content', "multi": "english"});
-    }
-    if(c){
-      paths.push({"value": 'content', "multi": "chinese"});
-    }
-    if(j){
-      paths.push({"value": 'content', "multi": "japanese"});
-    }
-    if(!p && !e && !c && !j){
-      paths.push({'wildcard': '*'});
-    }
     if(q){
-      must.push({
-          'text': {
-              'query': q,
-              'path': paths,
-              'fuzzy': fuzzy
-          }
-      });
+      let should = [];
+      if(k){
+        var kp = {"value": p, "multi": "keyword"};
+        paths.push(kp);
+        should.push({ "regex": { "query": ".*"+q+".*", "path": [kp] } });
+      }
+      if(e){
+        var ep = {"value": p, "multi": "english"};
+        paths.push(ep);
+        should.push({ "text": { "query": q, "path": [ep], 'fuzzy': fuzzy } });
+      }
+      if(c){
+        var cp = {"value": p, "multi": "chinese"};
+        paths.push(cp);
+        should.push({ "text": { "query": q, "path": [cp], 'fuzzy': fuzzy } });
+      }
+      if(j){
+        var jp = {"value": p, "multi": "japnaese"};
+        paths.push(jp);
+        should.push({ "text": { "query": q, "path": [jp], 'fuzzy': fuzzy } });
+      }
+      if(!e && !c && !j && !k){
+        if(p){
+          paths.push(p);
+          should.push({ "text": { "query": q, "path": p, 'fuzzy': fuzzy } });
+        }else{
+          var wildcard = {'wildcard': '*'};
+          paths.push(wildcard);
+          should.push({ "text": { "query": q, "path": wildcard}});
+        }
+      }
+      
     }
     if(lat && lng && r){
       must.push({
@@ -71,7 +81,8 @@ exports = function(query) {
         '$search': {
             'index':'default',
             'compound':{
-                'must':must
+                'must':must,
+                'should':should
             },
             'highlight': { 
                 'path': paths
@@ -95,6 +106,6 @@ exports = function(query) {
     ];
     //const results =context.services.get("mongodb-atlas").db("search").collection("data").findOne();
     const results = context.services.get("mongodb-atlas").db("search").collection("data").aggregate(agg_pipeline);
-    console.log("params:{q:\""+q+"\", f: "+f+", lat:"+lat+", lng:"+lng+", r:"+r+", l:"+l+", c:"+c+", j:"+j+", e:"+e+", p:"+p+"}");
+    console.log("params:{q:\""+q+"\", f: "+f+", lat:"+lat+", lng:"+lng+", r:"+r+", l:"+l+", k:"+k+", e:"+e+", c:"+c+", j:"+j+", p:"+p+"}");
     return results; 
 };
