@@ -9,11 +9,20 @@ $(window).on('load', function() {
     }
     $('#removeServers .form-control').on('change', removeServers);
 
+    securityGroup = function(){
+        newLines = "\n";
+        newLines += "export REGION=\""+$('#securityGroupRegion').val()+"\"\n";
+        newLines += "export SG_NAME=\""+$('#securityGroupName').val()+"\"\n";
+        newLines += "export SG_DESCRIPTION=\""+$('#securityGroupDesc').val()+"\"\n";
+        $("#securityGroup code").text(replaceFirstNLines($("#securityGroup code").text(), newLines));
+    }
+    $('#securityGroup .form-control').on('change', securityGroup);
+    
+    
     launchInstances = function(){
         newLines = "\n";
         newLines += "export REGION=\""+$('#launchInstanceRegion').val()+"\"\n";
         newLines += "export SG_NAME=\""+$('#launchInstanceSGName').val()+"\"\n";
-        newLines += "export SG_DESCRIPTION=\""+$('#launchInstanceSGDesc').val()+"\"\n";
         newLines += "export PG_NAME=\""+$('#launchInstancePGName').val()+"\"\n";
         newLines += "export ITYPE=\""+$('#launchInstanceInstanceType').val()+"\"\n";
         newLines += "export IMG_NAME=\""+$('#launchInstanceImageName').val()+"\"\n";

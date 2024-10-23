@@ -114,7 +114,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="installMongoCliCheckbox">
                                 <label class="form-check-label" for="installMongoCliCheckbox">Install MongoDB sh
-                                    </label>
+                                </label>
                             </div>
                             <pre><code>sudo yum install mongosh -y</code></pre>
                         </div>
@@ -144,6 +144,13 @@ unzip awscliv2.zip
 sudo ./aws/install
                             </code></pre>
                         </div>
+                        <div id="sso" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="ssoCheckbox">
+                                <label class="form-check-label" for="ssoCheckbox">Set AWS environment variables</label>
+                            </div>
+                            <textarea id="awsEnvVar" class="form-control"></textarea>
+                        </div>
 
                         <div id="removeServers" class="module mb-3">
                             <div class="form-check">
@@ -153,8 +160,7 @@ sudo ./aws/install
                             </div>
                             <div>
                                 <label for="removeServersRegions" class="form-label">Regions</label>
-                                <input type="text" class="form-control" id="removeServersRegions"
-                                    value="eu-west-1 us-west-1 ap-southeast-2"
+                                <input type="text" class="form-control" id="removeServersRegions" value="ap-east-1"
                                     placeholder="Terminate servers in these regions">
                             </div>
                             <div>
@@ -164,13 +170,13 @@ sudo ./aws/install
                             </div>
                             <div>
                                 <label for="removeServersTagName" class="form-label">Tag name (contains)</label>
-                                <input type="text" class="form-control" id="removeServersTagName" value="Tradecraft"
+                                <input type="text" class="form-control" id="removeServersTagName" value="ps-gcr"
                                     placeholder="Search servers by tag name">
                             </div>
                             <pre><code>
-export REGIONS=(eu-west-1 us-west-1 ap-southeast-2)
+export REGIONS=(ap-east-1)
 export OWNER="m.ma"
-export TAGNAME="Tradecraft"
+export TAGNAME="ps-gcr"
 for REGION in ${REGIONS[@]}; 
 do
 aws configure set default.region $REGION
@@ -184,7 +190,55 @@ done
                             </code></pre>
                         </div>
 
+                        <div id="securityGroup" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="securityGroupCheckbox">
+                                <label class="form-check-label" for="securityGroupCheckbox">Create Security
+                                    Group</label>
+                            </div>
+                            <div>
+                                <label for="securityGroupRegion" class="form-label">Region</label>
+                                <input type="text" class="form-control" id="securityGroupRegion" value="ap-east-1"
+                                    placeholder="Security Group region">
+                            </div>
+                            <div>
+                                <label for="securityGroupName" class="form-label">Security Group name</label>
+                                <input type="text" class="form-control" id="securityGroupName" value="m.ma"
+                                    placeholder="Create security group with name">
+                            </div>
+                            <div>
+                                <label for="securityGroupDesc" class="form-label">Security Group Description</label>
+                                <input type="text" class="form-control" id="securityGroupDesc" value="m ma test sg"
+                                    placeholder="Create security group with description">
+                            </div>
+                            <pre><code>
+export REGION="ap-east-1"
+export SG_NAME="m.ma"
+export SG_DESCRIPTION="m ma test sg"
 
+aws configure set default.region $REGION
+export VPCID=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" | jq -r '.Vpcs[0].VpcId')
+aws ec2 create-security-group --description "$SG_DESCRIPTION" --group-name "$SG_NAME" --vpc-id $VPCID
+export SECURITYGROUP=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=$SG_NAME" | jq -r '.SecurityGroups[0].GroupId')
+aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 0-63353 --source-group $SECURITYGROUP --protocol tcp 
+aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 22 --cidr 0.0.0.0/0 --protocol tcp
+                            </code></pre>
+                        </div>
+                        <div id="placementGroup" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="placementGroupCheckbox">
+                                <label class="form-check-label" for="placementGroupCheckbox">Create Placement
+                                    Group</label>
+                            </div>
+                            <div>
+                                <label for="placementGroupName" class="form-label">PG Name</label>
+                                <input type="text" class="form-control" id="placementGroupName" value="mma"
+                                    placeholder="Create placement group with name">
+                            </div>
+                            <pre><code>
+                        aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
+                    </code></pre>
+                        </div>
                         <div id="launchInstance" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="launchInstanceCheckbox">
@@ -192,18 +246,13 @@ done
                             </div>
                             <div>
                                 <label for="launchInstanceRegion" class="form-label">Region</label>
-                                <input type="text" class="form-control" id="launchInstanceRegion" value="eu-west-1"
+                                <input type="text" class="form-control" id="launchInstanceRegion" value="ap-east-1"
                                     placeholder="Launch instance in this region">
                             </div>
                             <div>
                                 <label for="launchInstanceSGName" class="form-label">SG name</label>
-                                <input type="text" class="form-control" id="launchInstanceSGName" value="m.ma"
+                                <input type="text" class="form-control" id="launchInstanceSGName" value="allowAll"
                                     placeholder="Create security group with name">
-                            </div>
-                            <div>
-                                <label for="launchInstanceSGDesc" class="form-label">SG Description</label>
-                                <input type="text" class="form-control" id="launchInstanceSGDesc" value="m ma test sg"
-                                    placeholder="Create security group with description">
                             </div>
                             <div>
                                 <label for="launchInstancePGName" class="form-label">PG Name</label>
@@ -211,14 +260,14 @@ done
                                     placeholder="Create placement group with name">
                             </div>
                             <div>
-                                <label for="launchInstanceInstanceType" class="form-label">PG Name</label>
+                                <label for="launchInstanceInstanceType" class="form-label">Instance Type</label>
                                 <input type="text" class="form-control" id="launchInstanceInstanceType" value="m5.large"
                                     placeholder="Instance type">
                             </div>
                             <div>
                                 <label for="launchInstanceImageName" class="form-label">Image Name</label>
                                 <input type="text" class="form-control" id="launchInstanceImageName"
-                                    value="amzn2-ami-hvm-2.0.20190115-x86_64-gp2"
+                                    value="al2023-ami-2023.6.20241010.0-kernel-6.1-x86_64"
                                     placeholder="Use this image to create instances">
                             </div>
                             <div>
@@ -228,13 +277,13 @@ done
                             </div>
                             <div>
                                 <label for="launchInstanceKeyName" class="form-label">Key Name</label>
-                                <input type="text" class="form-control" id="launchInstanceKeyName"
-                                    value="jlp-tradecraft" placeholder="Use this key for connecting instances">
+                                <input type="text" class="form-control" id="launchInstanceKeyName" value="m.ma"
+                                    placeholder="Use this key for connecting instances">
                             </div>
                             <div>
                                 <label for="launchInstanceTags" class="form-label">Tags</label>
                                 <textarea class="form-control"
-                                    id="launchInstanceTags">ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}]</textarea>
+                                    id="launchInstanceTags">ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}, {Key="expire-on", Value="2024-12-31"}]</textarea>
                             </div>
                             <div>
                                 <label for="launchInstanceNoOfHosts" class="form-label">No. of hosts</label>
@@ -242,39 +291,31 @@ done
                                     placeholder="How many instances to create">
                             </div>
                             <pre><code>
-export REGION="eu-west-1"
-export SG_NAME="m.ma"
-export SG_DESCRIPTION="m ma test sg"
+export REGION="ap-east-1"
+export SG_NAME="allowAll"
 export PG_NAME="mma"
 export ITYPE="m5.large"
-export IMG_NAME="amzn2-ami-hvm-2.0.20190115-x86_64-gp2"
+export IMG_NAME="al2023-ami-2023.6.20241010.0-kernel-6.1-x86_64"
 export DISKS='[{"DeviceName": "/dev/xvdb", "Ebs": {"DeleteOnTermination": true, "Iops": 1000, "VolumeSize": 30, "VolumeType": "io1"}},{"DeviceName": "/dev/xvda", "Ebs": {"DeleteOnTermination": true, "VolumeSize": 8, "VolumeType": "gp2"}}]'
-export KEY_NAME="jlp-tradecraft"
-export TAGS='ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}]'
+export KEY_NAME="m.ma"
+export TAGS='ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}, {Key="expire-on", Value="2024-12-31"}]'
 export NO_OF_HOST=3
 
 aws configure set default.region $REGION
 export VPCID=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" | jq -r '.Vpcs[0].VpcId')
-aws ec2 create-security-group --description "$SG_DESCRIPTION" --group-name "$SG_NAME" --vpc-id $VPCID
 export SECURITYGROUP=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=$SG_NAME" | jq -r '.SecurityGroups[0].GroupId')
-aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 0-63353 --source-group $SECURITYGROUP --protocol tcp 
-aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 22 --cidr 0.0.0.0/0 --protocol tcp
 
 export AMI=$(aws ec2 describe-images --filters "Name=name,Values=$IMG_NAME" | jq -r '.Images[0].ImageId')
-aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
-export SUBNETID=$(aws ec2 describe-subnets --filters "Name=vpcId,Values=$VPCID" | jq -r '[.Subnets[]  | { id : .SubnetId, tags : .Tags[] } | select ( .tags.Key == "Name") | {id:.id, name: .tags.Value} | select ( .name | contains ("Main"))][0] | .id ')
 aws ec2 run-instances --image-id $AMI \
 --count $NO_OF_HOST \
 --placement GroupName=$PG_NAME \
 --instance-type $ITYPE \
 --key-name $KEY_NAME \
---subnet-id $SUBNETID \
 --security-group-ids $SECURITYGROUP \
 --block-device-mappings "$DISKS" \
 --tag-specification "$TAGS"
                             </code></pre>
                         </div>
-
                         <div id="dns" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="dnsCheckbox">
@@ -318,45 +359,45 @@ export INTERNAL_SUBDOMAIN="mma"
 export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma") )| .publicip ')
 export EXTERNAL_SUBDOMAIN="exmma"
 
-HOSTNUM=1
-for IP in $INTERNAL_HOSTLIST
-do
-    export FQDN="${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
-    echo "Registering $IP as $FQDN"
-echo "{
-            \"Comment\": \"CREATE an A record \",
-            \"Changes\": [{
-            \"Action\": \"UPSERT\",
-                        \"ResourceRecordSet\": {
-                                    \"Name\": \"$FQDN\",
-                                    \"Type\": \"A\",
-                                    \"TTL\": 300,
-                                    \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
-}}]
-}" > newhost.json
-aws route53 change-resource-record-sets --hosted-zone-id $HOSTEDZONE --change-batch file://newhost.json 
-let "HOSTNUM=HOSTNUM+1"
-done
 
 HOSTNUM=1
-for IP in $EXTERNAL_HOSTLIST
-do
+while IFS= read -r IP || [[ -n $IP ]]; do    
+    export FQDN="${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
+    echo "Registering $IP as $FQDN"
+    echo "{
+        \"Comment\": \"CREATE an A record \",
+        \"Changes\": [{
+        \"Action\": \"UPSERT\",
+                    \"ResourceRecordSet\": {
+                                \"Name\": \"$FQDN\",
+                                \"Type\": \"A\",
+                                \"TTL\": 300,
+                                \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
+        }}]
+    }" > newhost.json
+    aws route53 change-resource-record-sets --hosted-zone-id $HOSTEDZONE --change-batch file://newhost.json 
+    let "HOSTNUM=HOSTNUM+1"
+done < <(printf '%s' "$INTERNAL_HOSTLIST")
+
+
+HOSTNUM=1
+while IFS= read -r IP || [[ -n $IP ]]; do    
     export FQDN="${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
     echo "Registering $IP as $FQDN"
-echo "{
-            \"Comment\": \"CREATE an A record \",
-            \"Changes\": [{
-            \"Action\": \"UPSERT\",
-                        \"ResourceRecordSet\": {
-                                    \"Name\": \"$FQDN\",
-                                    \"Type\": \"A\",
-                                    \"TTL\": 300,
-                                    \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
-}}]
-}" > newhost.json
-aws route53 change-resource-record-sets --hosted-zone-id $HOSTEDZONE --change-batch file://newhost.json 
-let "HOSTNUM=HOSTNUM+1"
-done
+    echo "{
+        \"Comment\": \"CREATE an A record \",
+        \"Changes\": [{
+        \"Action\": \"UPSERT\",
+                    \"ResourceRecordSet\": {
+                                \"Name\": \"$FQDN\",
+                                \"Type\": \"A\",
+                                \"TTL\": 300,
+                                \"ResourceRecords\": [{ \"Value\":\"$IP\"}]
+        }}]
+    }" > newhost.json
+    aws route53 change-resource-record-sets --hosted-zone-id $HOSTEDZONE --change-batch file://newhost.json 
+    let "HOSTNUM=HOSTNUM+1"
+done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                             </code></pre>
                         </div>
                     </div>
@@ -365,12 +406,13 @@ done
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingProductionNotes">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseProductionNotes" aria-expanded="false" aria-controls="collapseProductionNotes">
+                        data-bs-target="#collapseProductionNotes" aria-expanded="false"
+                        aria-controls="collapseProductionNotes">
                         Production Notes
                     </button>
                 </h2>
-                <div id="collapseProductionNotes" class="accordion-collapse collapse" aria-labelledby="headingProductionNotes"
-                    data-bs-parent="#accordionMain">
+                <div id="collapseProductionNotes" class="accordion-collapse collapse"
+                    aria-labelledby="headingProductionNotes" data-bs-parent="#accordionMain">
                     <div class="accordion-body">
                         <div id="productionNotes" class="module mb-3">
                             <div class="form-check">
@@ -396,8 +438,8 @@ done
                             </div>
                             <div>
                                 <label for="dataDrivePath" class="form-label">Data drive path</label>
-                                <input type="text" class="form-control" id="dataDrivePath"
-                                    value="/dev/xvdb" placeholder="Data drive path">
+                                <input type="text" class="form-control" id="dataDrivePath" value="/dev/xvdb"
+                                    placeholder="Data drive path">
                             </div>
                             <pre><code>
 export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
@@ -525,6 +567,7 @@ done
                             <pre><code>
 sudo mkfs.xfs /dev/nvme1n1
 grep -q /dev/nvme1n1 /etc/fstab || echo "/dev/nvme1n1       /data         xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
+sudo mkdir /data
 sudo mount /dev/nvme1n1 /data
                             </code></pre>
                         </div>
@@ -534,12 +577,13 @@ sudo mount /dev/nvme1n1 /data
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAutomationAgent">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseAutomationAgent" aria-expanded="false" aria-controls="collapseAutomationAgent">
+                        data-bs-target="#collapseAutomationAgent" aria-expanded="false"
+                        aria-controls="collapseAutomationAgent">
                         Automation agent
                     </button>
                 </h2>
-                <div id="collapseAutomationAgent" class="accordion-collapse collapse" aria-labelledby="headingAutomationAgent"
-                    data-bs-parent="#accordionMain">
+                <div id="collapseAutomationAgent" class="accordion-collapse collapse"
+                    aria-labelledby="headingAutomationAgent" data-bs-parent="#accordionMain">
                     <div class="accordion-body">
                         <div id="automationAgents" class="module mb-3">
                             <div class="form-check">
@@ -578,12 +622,14 @@ sudo mount /dev/nvme1n1 /data
                             </div>
                             <div>
                                 <label for="automationAgentsGroupId" class="form-label">Group / Project Id</label>
-                                <input type="text" class="form-control" id="automationAgentsGroupId" value="623dd817d4d33441855dfd5e"
+                                <input type="text" class="form-control" id="automationAgentsGroupId"
+                                    value="623dd817d4d33441855dfd5e"
                                     placeholder="The group / project Id from Cloud/Ops Manager">
                             </div>
                             <div>
                                 <label for="automationAgentsApiKey" class="form-label">Agents API Key</label>
-                                <input type="text" class="form-control" id="automationAgentsApiKey" value="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
+                                <input type="text" class="form-control" id="automationAgentsApiKey"
+                                    value="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
                                     placeholder="The Agent API Key from Cloud/Ops Manager">
                             </div>
                             <pre><code>
@@ -633,7 +679,8 @@ done
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingInstallation">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseInstallation" aria-expanded="false" aria-controls="collapseInstallation">
+                        data-bs-target="#collapseInstallation" aria-expanded="false"
+                        aria-controls="collapseInstallation">
                         Installation
                     </button>
                 </h2>
@@ -647,13 +694,16 @@ done
                                     Community Edition</label>
                             </div>
                             <pre><code>
-echo "[mongodb-org-5.0]
+sudo yum update -y
+sudo yum install -y cyrus-sasl cyrus-sasl-gssapi cyrus-sasl-plain krb5-libs libcurl openldap openssl xz-libs
+echo "[mongodb-org-8.0]
 name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/5.0/x86_64/
+baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/
 gpgcheck=1
 enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc" | sudo tee /etc/yum.repos.d/mongodb-org-5.0.repo 
+gpgkey=https://pgp.mongodb.com/server-8.0.asc" | sudo tee /etc/yum.repos.d/mongodb-org-8.0.repo 
 sudo yum install -y mongodb-org
+sudo yum remove -y mongodb-mongosh && sudo yum install -y mongodb-mongosh-shared-openssl3
                             </code></pre>
                         </div>
 
@@ -664,15 +714,19 @@ sudo yum install -y mongodb-org
                                     Enterprise Edition</label>
                             </div>
                             <pre><code>
-echo "[mongodb-enterprise-5.0]
+sudo yum update -y
+sudo yum install -y cyrus-sasl cyrus-sasl-gssapi cyrus-sasl-plain krb5-libs libcurl openldap openssl xz-libs
+echo "[mongodb-enterprise-8.0]
 name=MongoDB Enterprise Repository
-baseurl=https://repo.mongodb.com/yum/amazon/2/mongodb-enterprise/5.0/\$basearch/
+baseurl=https://repo.mongodb.com/yum/amazon/2023/mongodb-enterprise/8.0/\$basearch/
 gpgcheck=1
 enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-5.0.asc" | sudo tee /etc/yum.repos.d/mongodb-enterprise-5.0.repo 
+gpgkey=https://pgp.mongodb.com/server-8.0.asc" | sudo tee /etc/yum.repos.d/mongodb-enterprise-8.0.repo 
 sudo yum install -y mongodb-enterprise
+sudo yum remove -y mongodb-mongosh && sudo yum install -y mongodb-mongosh-shared-openssl3
                             </code></pre>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -686,6 +740,50 @@ sudo yum install -y mongodb-enterprise
                 <div id="collapseConfig" class="accordion-collapse collapse" aria-labelledby="headingConfig"
                     data-bs-parent="#accordionMain">
                     <div class="accordion-body">
+
+                        <div id="hosts" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hostsCheckbox">
+                                <label class="form-check-label" for="hostsCheckbox">Hosts file</label>
+                            </div>
+                            <div>
+                                <label for="hostsDomain" class="form-label">Domain Name</label>
+                                <input type="text" class="form-control" id="dnsDomain" value="mongodb.com"
+                                    placeholder="The domain name">
+                            </div>
+                            <div>
+                                <label for="hostsInternalSubdomain" class="form-label">Subdomain prefix</label>
+                                <input type="text" class="form-control" id="hostsInternalSubdomain" value="mma"
+                                    placeholder="The sub domain">
+                            </div>
+                            <div>
+                                <label for="hostsExternalSubdomain" class="form-label">Subdomain prefix</label>
+                                <input type="text" class="form-control" id="hostsExternalSubdomain" value="exmma"
+                                    placeholder="The external sub domain">
+                            </div>
+                            <pre><code>
+export DOMAIN="mongodb.com"
+export INTERNAL_SUBDOMAIN="mma"
+export EXTERNAL_SUBDOMAIN="exmma"
+
+export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .privateip')
+export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .publicip ')
+
+HOSTNUM=1
+content=""
+while IFS= read -r IP || [[ -n $IP ]]; do
+    content="$content\n$IP   ${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
+    let "HOSTNUM=HOSTNUM+1"
+done < <(printf '%s' "$INTERNAL_HOSTLIST")
+for IP in $'INTERNAL_HOSTLIST'
+HOSTNUM=1
+while IFS= read -r IP || [[ -n $IP ]]; do
+    content="$content\n$IP   ${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
+    let "HOSTNUM=HOSTNUM+1"
+done < <(printf '%s' "$EXTERNAL_HOSTLIST")
+echo "echo \"$content\" | sudo tee -a /etc/hosts"
+                            </code></pre>
+                        </div>
                         <div id="configMongod" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="configMongodCheckbox">
@@ -751,7 +849,7 @@ sudo sed -i 's@  bindIp.*$@  bindIp: 0.0.0.0@g' /etc/mongod.conf
 sudo systemctl start mongod
 sudo sed -i 's@#security:@security:\n  authorization: enabled\n  keyFile:  '"$KEYPATH"'/keyfile@g' /etc/mongod.conf
 sudo systemctl restart mongod
-sudo sed -i 's@  keyFile:  '"$KEYPATH"'/keyfile@  keyFile:  '"$KEYPATH"'/keyfile\n  javascriptEnabled:  true@g' /etc/mongod.conf
+sudo sed -i 's@  keyFile:  '"$KEYPATH"'/keyfile@  keyFile:  '"$KEYPATH"'/keyfile@g' /etc/mongod.conf
 sudo systemctl restart mongod
                             </code></pre>
                         </div>
@@ -763,11 +861,11 @@ sudo systemctl restart mongod
                             </div>
                             <div>
                                 <label for="configRSName" class="form-label">Replica Set Name</label>
-                                <input type="text" class="form-control" id="configRSName" value="mongodb-is-awesome"
+                                <input type="text" class="form-control" id="configRSName" value="rs"
                                     placeholder="Replica Set Name">
                             </div>
                             <pre><code>
-export RSNAME="mongodb-is-awesome"
+export RSNAME="rs"
 sudo sed -i 's@#replication.*$@replication:\n  replSetName: '"$RSNAME"'@g' /etc/mongod.conf
 sudo systemctl restart mongod
                             </code></pre>
@@ -779,31 +877,31 @@ sudo systemctl restart mongod
                             </div>
                             <div>
                                 <label for="replicaSetDocument" class="form-label">Replica Set Document</label>
-                                <textarea class="form-control"
-                                    id="replicaSetDocument">
+                                <textarea class="form-control" id="replicaSetDocument">
 {
-    _id: "mongodb-is-awesome",
+    _id: "rs",
     version: 1,
     members: [
-        { _id: 0, host : "exmma1.mdbrecruit.net:27017" },
-        { _id: 1, host : "exmma2.mdbrecruit.net:27017" },
-        { _id: 2, host : "exmma3.mdbrecruit.net:27017" }
+        { _id: 0, host : "exmma1.mongodb.com:27017" },
+        { _id: 1, host : "exmma2.mongodb.com:27017" },
+        { _id: 2, host : "exmma3.mongodb.com:27017" }
     ]
 }</textarea>
                             </div>
                             <pre><code>
-mongo --eval 'rs.initiate({
-    _id: "mongodb-is-awesome",
+
+mongosh --eval 'rs.initiate({
+    _id: "rs",
     version: 1,
     members: [
-        { _id: 0, host : "exmma1.mdbrecruit.net:27017" },
-        { _id: 1, host : "exmma2.mdbrecruit.net:27017" },
-        { _id: 2, host : "exmma3.mdbrecruit.net:27017" }
+        { _id: 0, host : "exmma1.mongodb.com:27017" },
+        { _id: 1, host : "exmma2.mongodb.com:27017" },
+        { _id: 2, host : "exmma3.mongodb.com:27017" }
     ]
 })'
                             </code></pre>
                         </div>
-                        <pre><code>
+                        <!--pre><code>
 sudo mkdir /var/run/mongodb
 sudo chown mongodb:mongodb /var/run/mongodb
 
@@ -836,76 +934,69 @@ sudo service mongod restart
 
 sudo systemctl enable mongod
 
-</code></pre>
+</code></pre-->
 
-</div>
-</div>
-</div>
-<div class="accordion-item">
-<h2 class="accordion-header" id="headingTLS">
-    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-        data-bs-target="#collapseTLS" aria-expanded="false" aria-controls="collapseTLS">
-        TLS
-    </button>
-</h2>
-<div id="collapseTLS" class="accordion-collapse collapse" aria-labelledby="headingTLS"
-    data-bs-parent="#accordionMain">
-    <div class="accordion-body">
-                    <div id="generateTLSCert" class="module mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="generateTLSCertCheckbox">
-                            <label class="form-check-label" for="generateTLSCertCheckbox">Generate TLS Cert</label>
-                        </div>
-                        <div>
-                            <label for="generateTLSCertHostList" class="form-label">Host list</label>
-                            <input type="text" class="form-control" id="generateTLSCertHostList"
-                                value="mma1.mdbrecruit.net mma2.mdbrecruit.net mma3.mdbrecruit.net"
-                                placeholder="host list of the servers">
-                        </div>
-                        <div>
-                            <label for="generateTLSCertAltName" class="form-label">subjectAltName (e.g. load balancer domain)</label>
-                            <input type="text" class="form-control" id="generateTLSCertAltName"
-                                value="mma.mdbtraining.net"
-                                placeholder="">
-                        </div>
-                        <div>
-                            <label for="generateTLSCertC" class="form-label">City</label>
-                            <input type="text" class="form-control" id="generateTLSCertC"
-                                value="HK"
-                                placeholder="">
-                        </div>
-                        <div>
-                            <label for="generateTLSCertST" class="form-label">State</label>
-                            <input type="text" class="form-control" id="generateTLSCertST"
-                                value="Hong Kong"
-                                placeholder="">
-                        </div>
-                        <div>
-                            <label for="generateTLSCertL" class="form-label">Location</label>
-                            <input type="text" class="form-control" id="generateTLSCertL"
-                                value="Hong Kong"
-                                placeholder="">
-                        </div>
-                        <div>
-                            <label for="generateTLSCertO" class="form-label">Organization</label>
-                            <input type="text" class="form-control" id="generateTLSCertO"
-                                value="MongoDB"
-                                placeholder="">
-                        </div>
-                        <div>
-                            <label for="generateTLSCertOU" class="form-label">Organization Unit</label>
-                            <input type="text" class="form-control" id="generateTLSCertOU"
-                                value="PS"
-                                placeholder="">
-                        </div>
-                        <div>
-                            <label for="generateTLSCertCN" class="form-label">Root Cert CN</label>
-                            <input type="text" class="form-control" id="generateTLSCertCN"
-                                value="rootca.com"
-                                placeholder="">
-                        </div>
-                        
-                        <pre><code>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTLS">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTLS" aria-expanded="false" aria-controls="collapseTLS">
+                        TLS
+                    </button>
+                </h2>
+                <div id="collapseTLS" class="accordion-collapse collapse" aria-labelledby="headingTLS"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <div id="generateTLSCert" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="generateTLSCertCheckbox">
+                                <label class="form-check-label" for="generateTLSCertCheckbox">Generate TLS Cert</label>
+                            </div>
+                            <div>
+                                <label for="generateTLSCertHostList" class="form-label">Host list</label>
+                                <input type="text" class="form-control" id="generateTLSCertHostList"
+                                    value="mma1.mdbrecruit.net mma2.mdbrecruit.net mma3.mdbrecruit.net"
+                                    placeholder="host list of the servers">
+                            </div>
+                            <div>
+                                <label for="generateTLSCertAltName" class="form-label">subjectAltName (e.g. load
+                                    balancer domain)</label>
+                                <input type="text" class="form-control" id="generateTLSCertAltName"
+                                    value="mma.mdbtraining.net" placeholder="">
+                            </div>
+                            <div>
+                                <label for="generateTLSCertC" class="form-label">City</label>
+                                <input type="text" class="form-control" id="generateTLSCertC" value="HK" placeholder="">
+                            </div>
+                            <div>
+                                <label for="generateTLSCertST" class="form-label">State</label>
+                                <input type="text" class="form-control" id="generateTLSCertST" value="Hong Kong"
+                                    placeholder="">
+                            </div>
+                            <div>
+                                <label for="generateTLSCertL" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="generateTLSCertL" value="Hong Kong"
+                                    placeholder="">
+                            </div>
+                            <div>
+                                <label for="generateTLSCertO" class="form-label">Organization</label>
+                                <input type="text" class="form-control" id="generateTLSCertO" value="MongoDB"
+                                    placeholder="">
+                            </div>
+                            <div>
+                                <label for="generateTLSCertOU" class="form-label">Organization Unit</label>
+                                <input type="text" class="form-control" id="generateTLSCertOU" value="PS"
+                                    placeholder="">
+                            </div>
+                            <div>
+                                <label for="generateTLSCertCN" class="form-label">Root Cert CN</label>
+                                <input type="text" class="form-control" id="generateTLSCertCN" value="rootca.com"
+                                    placeholder="">
+                            </div>
+
+                            <pre><code>
 export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net mma3.mdbrecruit.net)
 export ALTNAME="mma.mdbtraining.net"
 export C=HK
@@ -941,11 +1032,11 @@ done
 # Restore the original settings for openSSL
 sudo sed -i 's/^copy_extensions = copy$/# copy_extensions = copy/' /etc/pki/tls/openssl.cnf
 </code></pre>
- </div>
+                        </div>
 
 
 
-<pre><code>
+                        <pre><code>
     docker run -it --name container_name --mount src=/Users/mma/Documents/Docker/vol/test,target=/data,type=bind registry.access.redhat.com/ubi8/ubi bash
 </code></pre>
 
@@ -975,16 +1066,18 @@ sudo sed -i 's/^copy_extensions = copy$/# copy_extensions = copy/' /etc/pki/tls/
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                     data-bs-parent="#accordionMain">
                     <div class="accordion-body">
-                        mongo --eval "db.createUser({user:'mongoadmin',pwd:
-                        'passwordone',roles:[{db:'admin',role:'root'}]})" admin
+                        <pre><code>
+mongosh --eval "db.createUser({user: 'userAdmin', pwd:'userAdmin', roles:[{role : 'userAdminAnyDatabase', db: 'admin'}]})" admin
+mongosh --eval "db.createUser({user: 'dbAdmin', pwd:'dbAdmin', roles:[{role : 'readWriteAnyDatabase', db: 'admin'}, {role : 'dbAdminAnyDatabase', db: 'admin'}, {role : 'clusterMonitor', db: 'admin'}, {role : 'clusterAdmin', db: 'admin'}]})" admin -u userAdmin -p userAdmin
+                        </code></pre>
                     </div>
                 </div>
             </div>
         </div>
-    <div class="mb-3">
-        <label for="finalTextarea" class="form-label">Script</label>
-        <textarea class="form-control" id="finalTextarea" rows="10"></textarea>
-    </div>
+        <div class="mb-3">
+            <label for="finalTextarea" class="form-label">Script</label>
+            <textarea class="form-control" id="finalTextarea" rows="10"></textarea>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
