@@ -76,6 +76,15 @@ $(window).on('load', function() {
     }
     $('#configMongod .form-control').on('change', configMongod);
 
+    hosts = function(){
+        newLines = "\n";
+        newLines += "export DOMAIN=\""+$('#hostsDomain').val()+"\"\n";
+        newLines += "export INTERNAL_SUBDOMAIN=\""+$('#hostsInternalSubdomain').val()+"\"\n";
+        newLines += "export EXTERNAL_SUBDOMAIN=\""+$('#hostsExternalSubdomain').val()+"\"";
+        $("#hosts code").text(replaceFirstNLines($("#hosts code").text(), newLines));
+    }
+    $('#dns .form-control').on('change', dns);
+
     configRS = function(){
         newLines = "\n";
         newLines += "export RSNAME=\""+$('#configRSName').val()+"\"\n";
