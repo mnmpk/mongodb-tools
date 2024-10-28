@@ -82,7 +82,44 @@
             </div>
         </div>
     </div-->
+
     <div class="container px-4 py-5" id="main-content">
+        <div class="mb-3">
+            <h1>Global Setting</h1>
+            <div id="awsSetting">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="awsSettingCheckbox">
+                    <label class="form-check-label" for="awsSettingCheckbox">AWS Setting</label>
+                </div>
+                <div>
+                    <label for="awsRegion" class="form-label">Regions</label>
+                    <input type="text" class="form-control" id="awsRegion" value="ap-east-1"
+                        placeholder="Terminate servers in these regions">
+                </div>
+                <div>
+                    <label for="awsAccessKeyId" class="form-label">AWS access key ID</label>
+                    <input type="text" class="form-control" id="awsAccessKeyId" value=""
+                        placeholder="AWS access key ID">
+                </div>
+                <div>
+                    <label for="awsSecretAccessKey" class="form-label">AWS secret access key</label>
+                    <input type="text" class="form-control" id="awsSecretAccessKey" value=""
+                        placeholder="AWS secret access key">
+                </div>
+                <div>
+                    <label for="awsSessionToken" class="form-label">AWS session token</label>
+                    <input type="text" class="form-control" id="awsSessionToken" value=""
+                        placeholder="AWS session token">
+                </div>
+            </div>
+            <div>
+                <label for="awsEnvVar" class="form-label">Set AWS environment variables</label>
+                <textarea class="form-control" id="awsEnvVar" rows="5">export AWS_DEFAULT_REGION=""
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+export AWS_SESSION_TOKEN=""</textarea>
+            </div>
+        </div>
         <div class="accordion" id="accordionMain">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingPrerequisite">
@@ -112,8 +149,8 @@
                         </div>
                         <div id="installMongosh" class="module mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="installMongoCliCheckbox">
-                                <label class="form-check-label" for="installMongoCliCheckbox">Install MongoDB sh
+                                <input class="form-check-input" type="checkbox" id="installMongoShCheckbox">
+                                <label class="form-check-label" for="installMongoShCheckbox">Install MongoDB sh
                                 </label>
                             </div>
                             <pre><code>sudo yum install mongosh -y</code></pre>
@@ -143,13 +180,6 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
                             </code></pre>
-                        </div>
-                        <div id="sso" class="module mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="ssoCheckbox">
-                                <label class="form-check-label" for="ssoCheckbox">Set AWS environment variables</label>
-                            </div>
-                            <textarea id="awsEnvVar" class="form-control"></textarea>
                         </div>
 
                         <div id="removeServers" class="module mb-3">
@@ -236,7 +266,7 @@ aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 22 --c
                                     placeholder="Create placement group with name">
                             </div>
                             <pre><code>
-                        aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
+aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
                     </code></pre>
                         </div>
                         <div id="launchInstance" class="module mb-3">
@@ -261,8 +291,8 @@ aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 22 --c
                             </div>
                             <div>
                                 <label for="launchInstanceInstanceType" class="form-label">Instance Type</label>
-                                <input type="text" class="form-control" id="launchInstanceInstanceType" value="m5.large"
-                                    placeholder="Instance type">
+                                <input type="text" class="form-control" id="launchInstanceInstanceType"
+                                    value="m5.xlarge" placeholder="Instance type">
                             </div>
                             <div>
                                 <label for="launchInstanceImageName" class="form-label">Image Name</label>
@@ -294,7 +324,7 @@ aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 22 --c
 export REGION="ap-east-1"
 export SG_NAME="allowAll"
 export PG_NAME="mma"
-export ITYPE="m5.large"
+export ITYPE="m5.xlarge"
 export IMG_NAME="al2023-ami-2023.6.20241010.0-kernel-6.1-x86_64"
 export DISKS='[{"DeviceName": "/dev/xvdb", "Ebs": {"DeleteOnTermination": true, "Iops": 1000, "VolumeSize": 30, "VolumeType": "io1"}},{"DeviceName": "/dev/xvda", "Ebs": {"DeleteOnTermination": true, "VolumeSize": 8, "VolumeType": "gp2"}}]'
 export KEY_NAME="m.ma"
@@ -403,6 +433,91 @@ done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                     </div>
                 </div>
             </div>
+
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingHosts">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseHosts" aria-expanded="false" aria-controls="collapseHosts">
+                        Hosts
+                    </button>
+                </h2>
+                <div id="collapseHosts" class="accordion-collapse collapse" aria-labelledby="headingHosts"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <div id="hosts" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hostsCheckbox">
+                                <label class="form-check-label" for="hostsCheckbox">Hosts file</label>
+                            </div>
+                            <div>
+                                <label for="hostsDomain" class="form-label">Domain Name</label>
+                                <input type="text" class="form-control" id="dnsDomain" value="mongodb.com"
+                                    placeholder="The domain name">
+                            </div>
+                            <div>
+                                <label for="hostsInternalSubdomain" class="form-label">Subdomain prefix</label>
+                                <input type="text" class="form-control" id="hostsInternalSubdomain" value="mma"
+                                    placeholder="The sub domain">
+                            </div>
+                            <div>
+                                <label for="hostsExternalSubdomain" class="form-label">Subdomain prefix</label>
+                                <input type="text" class="form-control" id="hostsExternalSubdomain" value="exmma"
+                                    placeholder="The external sub domain">
+                            </div>
+                            <pre><code>
+export DOMAIN="mongodb.com"
+export INTERNAL_SUBDOMAIN="mma"
+export EXTERNAL_SUBDOMAIN="exmma"
+
+export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .privateip')
+export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .publicip ')
+
+HOSTNUM=1
+content=""
+while IFS= read -r IP || [[ -n $IP ]]; do
+content="$content\n$IP   ${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
+let "HOSTNUM=HOSTNUM+1"
+done < <(printf '%s' "$INTERNAL_HOSTLIST")
+for IP in $'INTERNAL_HOSTLIST'
+HOSTNUM=1
+while IFS= read -r IP || [[ -n $IP ]]; do
+content="$content\n$IP   ${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
+let "HOSTNUM=HOSTNUM+1"
+done < <(printf '%s' "$EXTERNAL_HOSTLIST")
+echo "echo \"$content\" | sudo tee -a /etc/hosts"
+                    </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingMountDisk">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseMountDisk" aria-expanded="false" aria-controls="collapseMountDisk">
+                        Mount Disk
+                    </button>
+                </h2>
+                <div id="collapseMountDisk" class="accordion-collapse collapse" aria-labelledby="headingMountDisk"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <div id="mountDisk" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="mountDiskCheckbox">
+                                <label class="form-check-label" for="mountDiskCheckbox">Mount Disk</label>
+                            </div>
+
+                            <pre><code>
+sudo mkfs.xfs /dev/nvme1n1
+grep -q /dev/nvme1n1 /etc/fstab || echo "/dev/nvme1n1       /data         xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
+sudo mkdir /data
+sudo mount /dev/nvme1n1 /data
+                            </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingProductionNotes">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -548,134 +663,7 @@ done
                     </div>
                 </div>
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingMountDisk">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseMountDisk" aria-expanded="false" aria-controls="collapseMountDisk">
-                        Mount Disk
-                    </button>
-                </h2>
-                <div id="collapseMountDisk" class="accordion-collapse collapse" aria-labelledby="headingMountDisk"
-                    data-bs-parent="#accordionMain">
-                    <div class="accordion-body">
-                        <div id="mountDisk" class="module mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="mountDiskCheckbox">
-                                <label class="form-check-label" for="mountDiskCheckbox">Mount Disk</label>
-                            </div>
 
-                            <pre><code>
-sudo mkfs.xfs /dev/nvme1n1
-grep -q /dev/nvme1n1 /etc/fstab || echo "/dev/nvme1n1       /data         xfs     defaults,noatime   1  1" | sudo tee --append /etc/fstab
-sudo mkdir /data
-sudo mount /dev/nvme1n1 /data
-                            </code></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingAutomationAgent">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseAutomationAgent" aria-expanded="false"
-                        aria-controls="collapseAutomationAgent">
-                        Automation agent
-                    </button>
-                </h2>
-                <div id="collapseAutomationAgent" class="accordion-collapse collapse"
-                    aria-labelledby="headingAutomationAgent" data-bs-parent="#accordionMain">
-                    <div class="accordion-body">
-                        <div id="automationAgents" class="module mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="automationAgentsCheckbox">
-                                <label class="form-check-label" for="automationAgentsCheckbox">Install automation
-                                    agents</label>
-                            </div>
-                            <div>
-                                <label for="automationAgentsHostList" class="form-label">host list</label>
-                                <input type="text" class="form-control" id="automationAgentsHostList"
-                                    value="mma1.mdbrecruit.net mma2.mdbrecruit.net"
-                                    placeholder="host list of the servers">
-                            </div>
-                            <div>
-                                <label for="automationAgentsExternalDNSPrefix" class="form-label">Subdomain
-                                    prefix</label>
-                                <input type="text" class="form-control" id="automationAgentsExternalDNSPrefix"
-                                    value="ex" placeholder="External DNS prefix">
-                            </div>
-                            <div>
-                                <label for="automationAgentsKeyPath" class="form-label">Key path</label>
-                                <input type="text" class="form-control" id="automationAgentsKeyPath"
-                                    value="~/.ssh/jlp-tradecraft.pem" placeholder="Key path">
-                            </div>
-                            <div>
-                                <label for="automationAgentLink" class="form-label">Link</label>
-                                <input type="text" class="form-control" id="automationAgentLink"
-                                    value="https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm"
-                                    placeholder="Link to download the automation agent binary">
-                            </div>
-                            <div>
-                                <label for="automationAgentFileName" class="form-label">File Name</label>
-                                <input type="text" class="form-control" id="automationAgentFileName"
-                                    value="mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm"
-                                    placeholder="The downloded agent file name">
-                            </div>
-                            <div>
-                                <label for="automationAgentsGroupId" class="form-label">Group / Project Id</label>
-                                <input type="text" class="form-control" id="automationAgentsGroupId"
-                                    value="623dd817d4d33441855dfd5e"
-                                    placeholder="The group / project Id from Cloud/Ops Manager">
-                            </div>
-                            <div>
-                                <label for="automationAgentsApiKey" class="form-label">Agents API Key</label>
-                                <input type="text" class="form-control" id="automationAgentsApiKey"
-                                    value="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
-                                    placeholder="The Agent API Key from Cloud/Ops Manager">
-                            </div>
-                            <pre><code>
-export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
-export PREFIX="ex"
-export KEYPATH="~/.ssh/jlp-tradecraft.pem"
-export LINK=https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
-export FILENAME=mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
-export GROUPID="623dd817d4d33441855dfd5e"
-export AGENTSAPIKEY="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
-
-
-cat << 'ENDSCRIPT' > setupagent.sh
-curl -OL $LINK
-
-sudo rpm -U $FILENAME
-
-mmsGroupId=$GROUPID
-
-mmsApiKey=$AGENTSAPIKEY
-
-sudo sed -i  "s#mmsGroupId=.*#mmsGroupId=$mmsGroupId#" /etc/mongodb-mms/automation-agent.config
-
-sudo sed -i  "s#mmsApiKey=.*#mmsApiKey=$mmsApiKey#" /etc/mongodb-mms/automation-agent.config
-
-sudo mkdir /data
-sudo chown mongod:mongod /data
-
-sudo systemctl start mongodb-mms-automation-agent.service
-sudo systemctl enable mongodb-mms-automation-agent.service
-
-ENDSCRIPT
-
-for HOST in $HOSTLIST
-do
-
-scp -o StrictHostKeyChecking=no -i ${KEYPATH} setupagent.sh ec2-user@${PREFIX}${HOST}:
-ssh  -o StrictHostKeyChecking=no -i ${KEYPATH} ec2-user@${PREFIX}${HOST} "export GROUPID=${GROUPID};export AGENTSAPIKEY=${AGENTSAPIKEY};chmod u+x setupagent.sh && ./setupagent.sh"
-
-done
-        
-                            </code></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingInstallation">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -702,8 +690,8 @@ baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/
 gpgcheck=1
 enabled=1
 gpgkey=https://pgp.mongodb.com/server-8.0.asc" | sudo tee /etc/yum.repos.d/mongodb-org-8.0.repo 
-sudo yum install -y mongodb-org
 sudo yum remove -y mongodb-mongosh && sudo yum install -y mongodb-mongosh-shared-openssl3
+sudo yum install -y mongodb-org
                             </code></pre>
                         </div>
 
@@ -722,8 +710,8 @@ baseurl=https://repo.mongodb.com/yum/amazon/2023/mongodb-enterprise/8.0/\$basear
 gpgcheck=1
 enabled=1
 gpgkey=https://pgp.mongodb.com/server-8.0.asc" | sudo tee /etc/yum.repos.d/mongodb-enterprise-8.0.repo 
-sudo yum install -y mongodb-enterprise
 sudo yum remove -y mongodb-mongosh && sudo yum install -y mongodb-mongosh-shared-openssl3
+sudo yum install -y mongodb-enterprise
                             </code></pre>
                         </div>
 
@@ -740,50 +728,6 @@ sudo yum remove -y mongodb-mongosh && sudo yum install -y mongodb-mongosh-shared
                 <div id="collapseConfig" class="accordion-collapse collapse" aria-labelledby="headingConfig"
                     data-bs-parent="#accordionMain">
                     <div class="accordion-body">
-
-                        <div id="hosts" class="module mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="hostsCheckbox">
-                                <label class="form-check-label" for="hostsCheckbox">Hosts file</label>
-                            </div>
-                            <div>
-                                <label for="hostsDomain" class="form-label">Domain Name</label>
-                                <input type="text" class="form-control" id="dnsDomain" value="mongodb.com"
-                                    placeholder="The domain name">
-                            </div>
-                            <div>
-                                <label for="hostsInternalSubdomain" class="form-label">Subdomain prefix</label>
-                                <input type="text" class="form-control" id="hostsInternalSubdomain" value="mma"
-                                    placeholder="The sub domain">
-                            </div>
-                            <div>
-                                <label for="hostsExternalSubdomain" class="form-label">Subdomain prefix</label>
-                                <input type="text" class="form-control" id="hostsExternalSubdomain" value="exmma"
-                                    placeholder="The external sub domain">
-                            </div>
-                            <pre><code>
-export DOMAIN="mongodb.com"
-export INTERNAL_SUBDOMAIN="mma"
-export EXTERNAL_SUBDOMAIN="exmma"
-
-export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .privateip')
-export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .publicip ')
-
-HOSTNUM=1
-content=""
-while IFS= read -r IP || [[ -n $IP ]]; do
-    content="$content\n$IP   ${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
-    let "HOSTNUM=HOSTNUM+1"
-done < <(printf '%s' "$INTERNAL_HOSTLIST")
-for IP in $'INTERNAL_HOSTLIST'
-HOSTNUM=1
-while IFS= read -r IP || [[ -n $IP ]]; do
-    content="$content\n$IP   ${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
-    let "HOSTNUM=HOSTNUM+1"
-done < <(printf '%s' "$EXTERNAL_HOSTLIST")
-echo "echo \"$content\" | sudo tee -a /etc/hosts"
-                            </code></pre>
-                        </div>
                         <div id="configMongod" class="module mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="configMongodCheckbox">
@@ -809,18 +753,9 @@ echo "echo \"$content\" | sudo tee -a /etc/hosts"
                                 <input type="text" class="form-control" id="configMongodKeyPath" value="/keys"
                                     placeholder="Key Path">
                             </div>
-                            <pre><code>
-export DATAPATH="/data"          
-export DBPATH="$DATAPATH/db"
-export LOGPATH="$DATAPATH/logs"
-export KEYPATH="$DATAPATH/keys"
-
-sudo mkdir -p $DBPATH
-sudo mkdir -p $LOGPATH
-sudo mkdir -p $KEYPATH
-
-cat << 'ENDKEY' | sudo tee keyfile
-/1teDs8E1y0rlRtOxi6FIgyEFx8S58LkwfE5NpLXYJl1MnCKEeziz3py0JMWcZmK
+                            <div>
+                                <label for="configMongodKey" class="form-label">Key</label>
+                                <textarea class="form-control" id="configMongodKey">/1teDs8E1y0rlRtOxi6FIgyEFx8S58LkwfE5NpLXYJl1MnCKEeziz3py0JMWcZmK
 ZvZaOerfh1K1u6GB5xzErWq7qVwQJl6NCLilfpHwJvEvLpc2XlUCS/hrUwmuQeRZ
 4DN01Ka3yGnWojpyGHUImoHY9TBTUKOJ7AMaFV4Yq8Of3scASXcbZhhD0ih/MegD
 DcfUxX0wMmnwNCA7g96lMyyNWSGlVCgUsgC3ih6fgoQbK8XNb7IVzG8xolQvxYKq
@@ -835,20 +770,51 @@ kExLjESf54L+BqD3UPVsyESegAujWLYEJK8fYJ/MA1JnOL7SZEEJwMUb1U+q+eav
 KrmMj+MAag3hU5cNTIK2C6RgNGV9NDNhyfe2Eu6WBU9qzzMEimbgC7824Qusk/kg
 1qlk+OVly8M9woJ/S01W3iw2yU/GX7JLT/hV/kxxZKphQh4KdxKta4f9n8+Aybiz
 tAJvsvt2Lp90rFkrjJpkF3qUWpfH8kzIUppnsZIuH5Y4yVz1cr+CrSacmUA82TqN
-kMirO+dCmuVH87naMzdoAbsiu2UgIYJ90m6Fc7V1ch3C9WtQ
-ENDKEY
+kMirO+dCmuVH87naMzdoAbsiu2UgIYJ90m6Fc7V1ch3C9WtQ</textarea>
+                            </div>
+                            <pre><code>
+export DATAPATH="/data"          
+export DBPATH="$DATAPATH/db"
+export LOGPATH="$DATAPATH/logs"
+export KEYPATH="$DATAPATH/keys"
+export KEYFILE="/1teDs8E1y0rlRtOxi6FIgyEFx8S58LkwfE5NpLXYJl1MnCKEeziz3py0JMWcZmK
+ZvZaOerfh1K1u6GB5xzErWq7qVwQJl6NCLilfpHwJvEvLpc2XlUCS/hrUwmuQeRZ
+4DN01Ka3yGnWojpyGHUImoHY9TBTUKOJ7AMaFV4Yq8Of3scASXcbZhhD0ih/MegD
+DcfUxX0wMmnwNCA7g96lMyyNWSGlVCgUsgC3ih6fgoQbK8XNb7IVzG8xolQvxYKq
+kEqKI3VifwSgTcUQRpu9FF137QtwLW6NcrKiNOhMN26zVWJsfTGqQZ0XC07wej6R
+sF9oBHMSub7q3zR6J+MzboA3yWTNqgCymEv9Qx7lviTQzPHpNIEWAot89eeXWdY0
+L1Sxy21XyWC6ZhgnfSoVJR1LJiE+r5B8iMewqXKMQ1dQaqsS57qg1pX7vzglwMeM
+ZK2iAOdfdW0ERpp/bwRNT42sePmxxWBLQao8D+RVLbayaRbOxFrnQqLzUYQfKhDN
+2yivoAKPXvKtcC9Fns4Ojxetyb/wWFrd7j0oGwV1g5ShJbJSg8LDw6HXpriR33L+
+6ILuObUmyVlkXOT6BkUWeabKSptpyvfNlhGALGMiXPVA9KPz47HyQLmAy15tkYRH
+9s4b2LdT2mKJJsGpsnJro9Kp2QHl2ClWZuLw22mofNtEiE5XeOlv53Wx08jFBrLE
+kExLjESf54L+BqD3UPVsyESegAujWLYEJK8fYJ/MA1JnOL7SZEEJwMUb1U+q+eav
+KrmMj+MAag3hU5cNTIK2C6RgNGV9NDNhyfe2Eu6WBU9qzzMEimbgC7824Qusk/kg
+1qlk+OVly8M9woJ/S01W3iw2yU/GX7JLT/hV/kxxZKphQh4KdxKta4f9n8+Aybiz
+tAJvsvt2Lp90rFkrjJpkF3qUWpfH8kzIUppnsZIuH5Y4yVz1cr+CrSacmUA82TqN
+kMirO+dCmuVH87naMzdoAbsiu2UgIYJ90m6Fc7V1ch3C9WtQ"
+export WTCACHESIZE="2"
+
+sudo mkdir -p $DBPATH
+sudo mkdir -p $LOGPATH
+sudo mkdir -p $KEYPATH
+
+cat <<< $KEYFILE | sudo tee keyfile
+#cat << 'ENDKEY' | sudo tee keyfile
+#Plain text key
+#ENDKEY
+
 
 #openssl rand -base64 756 > keyfile
 sudo mv keyfile "$KEYPATH"
 sudo chmod 400 $KEYPATH/keyfile
 sudo chown -R mongod:mongod $DATAPATH
 
+sudo sed -i 's@storage:.*$@storage:\n  wiredTiger:\n    engineConfig:\n      cacheSizeGB: '"$WTCACHESIZE"'@g' /etc/mongod.conf
 sudo sed -i 's@\s\sdbPath:.*$@  dbPath: '"$DBPATH"'@g' /etc/mongod.conf
 sudo sed -i 's@\s\spath:.*$@  path: '"$LOGPATH"'/mongod.log@g' /etc/mongod.conf
 sudo sed -i 's@  bindIp.*$@  bindIp: 0.0.0.0@g' /etc/mongod.conf
-sudo systemctl start mongod
 sudo sed -i 's@#security:@security:\n  authorization: enabled\n  keyFile:  '"$KEYPATH"'/keyfile@g' /etc/mongod.conf
-sudo systemctl restart mongod
 sudo sed -i 's@  keyFile:  '"$KEYPATH"'/keyfile@  keyFile:  '"$KEYPATH"'/keyfile@g' /etc/mongod.conf
 sudo systemctl restart mongod
                             </code></pre>
@@ -1036,47 +1002,210 @@ sudo sed -i 's/^copy_extensions = copy$/# copy_extensions = copy/' /etc/pki/tls/
 
 
 
-                        <pre><code>
-    docker run -it --name container_name --mount src=/Users/mma/Documents/Docker/vol/test,target=/data,type=bind registry.access.redhat.com/ubi8/ubi bash
-</code></pre>
 
                     </div>
                 </div>
             </div>
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingPerformance">
+                <h2 class="accordion-header" id="headingDocker">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapsePerformance" aria-expanded="false" aria-controls="collapsePerformance">
-                        Performance
+                        data-bs-target="#collapseDocker" aria-expanded="false" aria-controls="collapseDocker">
+                        Docker
                     </button>
                 </h2>
-                <div id="collapsePerformance" class="accordion-collapse collapse" aria-labelledby="headingPerformance"
+                <div id="collapseDocker" class="accordion-collapse collapse" aria-labelledby="headingDocker"
                     data-bs-parent="#accordionMain">
                     <div class="accordion-body">
+                        <div id="docker" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="dockerCheckbox">
+                                <label class="form-check-label" for="dockerCheckbox">Docker</label>
+                            </div>
+                            <pre><code>
+docker run -it --name container_name --mount src=/Users/mma/Documents/Docker/vol/test,target=/data,type=bind registry.access.redhat.com/ubi8/ubi bash
+                        </code></pre>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingThree">
+                <h2 class="accordion-header" id="headingOpsManager">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        data-bs-target="#collapseOpsManager" aria-expanded="false" aria-controls="collapseOpsManager">
+                        Ops Manager
+                    </button>
+                </h2>
+                <div id="collapseOpsManager" class="accordion-collapse collapse" aria-labelledby="headingOpsManager"
+                    data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <div id="opsManager" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="opsManagerCheckbox">
+                                <label class="form-check-label" for="opsManagerCheckbox">Ops manager
+                                    installation</label>
+                            </div>
+
+                            <div>
+                                <label for="opsManagerVersion" class="form-label">Ops manager version</label>
+                                <input type="text" class="form-control" id="opsManagerVersion"
+                                    value="8.0.0.500.20240924T1611Z" placeholder="">
+                            </div>
+
+                            <pre><code>
+export VERSION="8.0.0.500.20240924T1611Z"
+
+wget https://downloads.mongodb.com/on-prem-mms/rpm/mongodb-mms-$VERSION.x86_64.rpm
+sudo rpm -Uvh --force mongodb-mms-$VERSION.x86_64.rpm
+
+export MONGOURI="mongodb://dbAdmin:dbAdmin\@exmma1.mongodb.com:27017,exmma2.mongodb.com:27017,exmma3.mongodb.com:27017/?maxPoolSize=150\&retryWrites=false\&retryReads=false\&uuidRepresentation=standard"
+sudo sed -i 's@mongo\.mongoUri.*$@mongo.mongoUri='"$MONGOURI"'@g' /opt/mongodb/mms/conf/conf-mms.properties
+
+sudo service mongodb-mms start
+
+sudo cp /etc/mongodb-mms ~/
+scp -i ~/Documents/AWS/mma_hk.pem ec2-user@43.198.241.165:~/gen.key .
+scp -i ~/Documents/AWS/mma_hk.pem ./gen.key ec2-user@43.198.222.65:~
+scp -i ~/Documents/AWS/mma_hk.pem ./gen.key ec2-user@16.162.32.69:~
+
+
+sudo mv ~/gen.key /etc/mongodb-mms
+sudo chown mongodb-mms:mongodb-mms /etc/mongodb-mms/gen.key
+sudo chmod 600 /etc/mongodb-mms/gen.key
+                        </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingAutomationAgent">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAutomationAgent" aria-expanded="false"
+                        aria-controls="collapseAutomationAgent">
+                        Automation agent
+                    </button>
+                </h2>
+                <div id="collapseAutomationAgent" class="accordion-collapse collapse"
+                    aria-labelledby="headingAutomationAgent" data-bs-parent="#accordionMain">
+                    <div class="accordion-body">
+                        <div id="automationAgents" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="automationAgentsCheckbox">
+                                <label class="form-check-label" for="automationAgentsCheckbox">Install automation
+                                    agents</label>
+                            </div>
+                            <div>
+                                <label for="automationAgentsHostList" class="form-label">host list</label>
+                                <input type="text" class="form-control" id="automationAgentsHostList"
+                                    value="mma1.mdbrecruit.net mma2.mdbrecruit.net"
+                                    placeholder="host list of the servers">
+                            </div>
+                            <div>
+                                <label for="automationAgentsExternalDNSPrefix" class="form-label">Subdomain
+                                    prefix</label>
+                                <input type="text" class="form-control" id="automationAgentsExternalDNSPrefix"
+                                    value="ex" placeholder="External DNS prefix">
+                            </div>
+                            <div>
+                                <label for="automationAgentsKeyPath" class="form-label">Key path</label>
+                                <input type="text" class="form-control" id="automationAgentsKeyPath"
+                                    value="~/.ssh/jlp-tradecraft.pem" placeholder="Key path">
+                            </div>
+                            <div>
+                                <label for="automationAgentLink" class="form-label">Link</label>
+                                <input type="text" class="form-control" id="automationAgentLink"
+                                    value="https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm"
+                                    placeholder="Link to download the automation agent binary">
+                            </div>
+                            <div>
+                                <label for="automationAgentFileName" class="form-label">File Name</label>
+                                <input type="text" class="form-control" id="automationAgentFileName"
+                                    value="mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm"
+                                    placeholder="The downloded agent file name">
+                            </div>
+                            <div>
+                                <label for="automationAgentsGroupId" class="form-label">Group / Project Id</label>
+                                <input type="text" class="form-control" id="automationAgentsGroupId"
+                                    value="623dd817d4d33441855dfd5e"
+                                    placeholder="The group / project Id from Cloud/Ops Manager">
+                            </div>
+                            <div>
+                                <label for="automationAgentsApiKey" class="form-label">Agents API Key</label>
+                                <input type="text" class="form-control" id="automationAgentsApiKey"
+                                    value="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
+                                    placeholder="The Agent API Key from Cloud/Ops Manager">
+                            </div>
+                            <pre><code>
+export HOSTLIST=(mma1.mdbrecruit.net mma2.mdbrecruit.net)
+export PREFIX="ex"
+export KEYPATH="~/.ssh/jlp-tradecraft.pem"
+export LINK=https://cloud.mongodb.com/download/agent/automation/mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
+export FILENAME=mongodb-mms-automation-agent-manager-11.12.1.7406-1.x86_64.rhel7.rpm
+export GROUPID="623dd817d4d33441855dfd5e"
+export AGENTSAPIKEY="6241238ca538ae142ad1cbfde5c9f222868e9c2ef74f5f2b0ea41c2f"
+
+
+cat << 'ENDSCRIPT' > setupagent.sh
+curl -OL $LINK
+
+sudo rpm -U $FILENAME
+
+mmsGroupId=$GROUPID
+
+mmsApiKey=$AGENTSAPIKEY
+
+sudo sed -i  "s#mmsGroupId=.*#mmsGroupId=$mmsGroupId#" /etc/mongodb-mms/automation-agent.config
+
+sudo sed -i  "s#mmsApiKey=.*#mmsApiKey=$mmsApiKey#" /etc/mongodb-mms/automation-agent.config
+
+sudo mkdir /data
+sudo chown mongod:mongod /data
+
+sudo systemctl start mongodb-mms-automation-agent.service
+sudo systemctl enable mongodb-mms-automation-agent.service
+
+ENDSCRIPT
+
+for HOST in $HOSTLIST
+do
+
+scp -o StrictHostKeyChecking=no -i ${KEYPATH} setupagent.sh ec2-user@${PREFIX}${HOST}:
+ssh  -o StrictHostKeyChecking=no -i ${KEYPATH} ec2-user@${PREFIX}${HOST} "export GROUPID=${GROUPID};export AGENTSAPIKEY=${AGENTSAPIKEY};chmod u+x setupagent.sh && ./setupagent.sh"
+
+done
+        
+                            </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingCreateUser">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseCreateUser" aria-expanded="false" aria-controls="collapseCreateUser">
                         mongosh command
                     </button>
                 </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                <div id="collapseCreateUser" class="accordion-collapse collapse" aria-labelledby="headingCreateUser"
                     data-bs-parent="#accordionMain">
                     <div class="accordion-body">
-                        <pre><code>
+                        <div id="createUser" class="module mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="createUserCheckbox">
+                                <label class="form-check-label" for="createUserCheckbox">Create user</label>
+                            </div>
+
+                            <pre><code>
 mongosh --eval "db.createUser({user: 'userAdmin', pwd:'userAdmin', roles:[{role : 'userAdminAnyDatabase', db: 'admin'}]})" admin
 mongosh --eval "db.createUser({user: 'dbAdmin', pwd:'dbAdmin', roles:[{role : 'readWriteAnyDatabase', db: 'admin'}, {role : 'dbAdminAnyDatabase', db: 'admin'}, {role : 'clusterMonitor', db: 'admin'}, {role : 'clusterAdmin', db: 'admin'}]})" admin -u userAdmin -p userAdmin
-                        </code></pre>
+                            </code></pre>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="mb-3">
-            <label for="finalTextarea" class="form-label">Script</label>
-            <textarea class="form-control" id="finalTextarea" rows="10"></textarea>
+            <label for="final" class="form-label">Final Script</label>
+            <div id="final"></div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
