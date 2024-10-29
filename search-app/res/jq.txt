@@ -1,4 +1,30 @@
 cat public_estate.org.json | jq -r '.[] | {
-    "content": .,
-    "location":{"type":"Point","coordinates":[."Estate Map Longitude",."Estate Map Latitude"]}
-    }' > public_estate.json
+    "content":(
+        ."Region Name"."en"+" "+."District Name"."en"+" "+."Estate Name"."en"+" Type of Estate: "+."Type of Estate"."en"+" Property Management: "+."Property Management"."en"+"\n"+
+        ."Region Name"."zh-Hant"+" "+."District Name"."zh-Hant"+" "+."Estate Name"."zh-Hant"+" 屋邨類型: "+."Type of Estate"."zh-Hant"+" 物業管理: "+."Property Management"."zh-Hant"+"\n"+
+        ."Region Name"."zh-Hans"+" "+."District Name"."zh-Hans"+" "+."Estate Name"."zh-Hans"+" 屋村类型: "+."Type of Estate"."zh-Hans"+" 
+物业管理: "+."Property Management"."zh-Hans"
+    ),
+    "data": {
+        "estate_name":."Estate Name",
+        "district_name":."District Name",
+        "region_name":."Region Name",
+        "type":."Type of Estate",
+        "year_intake":."Year of Intake",
+        "block_types":."Type(s) of Block(s)",
+        "num_of_blocks":."No. of Blocks",
+        "name_of_blocks":."Name of Block(s)",
+        "name_of_rental_flats":."No. of Rental Flats",
+        "flat_size":."Flat Size (m2)",
+        "emac":."Estate Management Advisory Committee (EMAC)",
+        "tenancy_office":."District Tenancy Management Office/Estate Office",
+        "property_management":."Property Management",
+        "carpark_management":."Carpark Management",
+        "website":."Estate Website",
+        "other_infomation":."Further Information"
+    },
+    "location":{
+        "type":"Point",
+        "coordinates":[."Estate Map Longitude",."Estate Map Latitude"]
+    }
+}' | jq -s > public_estate.json

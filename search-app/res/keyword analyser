@@ -1,0 +1,27 @@
+{ "index": "personLocationNames",  }
+
+
+[
+    {
+      "$search": {
+        "index": "default",
+        "compound": { 
+            "should": [
+            { "text": { "query": "攻略", "path": "txt" } },
+            { "regex": { "query": ".*攻略.*", "path": [{"value": "txt", "multi": "keyword"}] } } 
+            ],
+            "minimumShouldMatch": 1 
+            }
+      }
+    }
+  ]
+
+
+[
+    {
+      "$search": {
+        "index": "message",
+        "regex": { "query": ".*攻略.*", "path": "txt" }
+      }
+    }
+  ]
