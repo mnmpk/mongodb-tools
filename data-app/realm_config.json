@@ -1,8 +1,0 @@
-{
-    "app_id": "data-app-llrum",
-    "config_version": 20210101,
-    "name": "data-app",
-    "location": "SG",
-    "provider_region": "aws-ap-southeast-1",
-    "deployment_model": "LOCAL"
-}
