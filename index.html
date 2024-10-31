@@ -230,12 +230,12 @@ for REGION in ${REGIONS[@]};
 do
 aws configure set default.region $REGION
  HOSTLIST=$( aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r --arg TAGNAME "$TAGNAME" '.Reservations[].Instances[]  | { "instanceid" : .InstanceId, "publicip" : .PublicIpAddress, "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } |  select ( .name | contains ($TAGNAME) )| .instanceid ')
-for host in $HOSTLIST
-do
- echo "Terminating $host in $REGION"
- aws ec2 terminate-instances --instance-ids $host
+    while IFS= read -r host || [[ -n $host ]]; do  
+        echo "Terminating $host in $REGION"
+        aws ec2 terminate-instances --instance-ids $host
+    done < <(printf '%s' "$HOSTLIST")
 done
-done
+
                             </code></pre>
                         </div>
 
@@ -394,6 +394,7 @@ while IFS= read -r IP || [[ -n $IP ]]; do
     aws route53 change-resource-record-sets --hosted-zone-id $HOSTEDZONE --change-batch file://newhost.json 
     let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$EXTERNAL_HOSTLIST")
+
                             </code></pre>
                         </div>
                     </div>
