@@ -1,14 +1,5 @@
 
 $(window).on('load', function () {
-    removeServers = function () {
-        newLines = "\n";
-        newLines += "export REGIONS=(" + $('#removeServersRegions').val() + ")\n";
-        newLines += "export OWNER=\"" + $('#removeServersOwner').val() + "\"\n";
-        newLines += "export TAGNAME=\"" + $('#removeServersTagName').val() + "\"";
-        $("#removeServers code").text(replaceFirstNLines($("#removeServers code").text(), newLines));
-    }
-    $('#removeServers .form-control').on('change', removeServers);
-
     append = function () {
         let cId = this.parentElement.parentElement.id;
         /*if ("awsEnvVar" == this.id)
@@ -26,6 +17,9 @@ $(window).on('load', function () {
     }
     $('input[type=checkbox]').on('click', append);
 
+    refreshAws = ()=>{
+        $('#final_awsSetting').text($('#awsEnvVar').val());
+    }
     awsSetting = function () {
         newLines = "";
         newLines += "export AWS_DEFAULT_REGION=" + $('#awsRegion').val() + "\n";
@@ -33,56 +27,72 @@ $(window).on('load', function () {
         newLines += "export AWS_SECRET_ACCESS_KEY=\"" + $('#awsSecretAccessKey').val() + "\"\n";
         newLines += "export AWS_SESSION_TOKEN=\"" + $('#awsSessionToken').val() + "\"";
         $("#awsEnvVar").val(newLines);
+        refreshAws();
     }
     $('#awsSetting .form-control').on('change', awsSetting);
 
-    //$('#awsEnvVar').on('change', append);
-
-    removeServers = function () {
-        newLines = "\n";
-        newLines += "export REGIONS=(" + $('#removeServersRegions').val() + ")\n";
-        newLines += "export OWNER=\"" + $('#removeServersOwner').val() + "\"\n";
-        newLines += "export TAGNAME=\"" + $('#removeServersTagName').val() + "\"";
-        $("#removeServers code").text(replaceFirstNLines($("#removeServers code").text(), newLines));
-    }
-    $('#removeServers .form-control').on('change', removeServers);
-
-    securityGroup = function () {
-        newLines = "\n";
-        newLines += "export REGION=\"" + $('#securityGroupRegion').val() + "\"\n";
-        newLines += "export SG_NAME=\"" + $('#securityGroupName').val() + "\"\n";
-        newLines += "export SG_DESCRIPTION=\"" + $('#securityGroupDesc').val() + "\"\n";
-        $("#securityGroup code").text(replaceFirstNLines($("#securityGroup code").text(), newLines));
-    }
-    $('#securityGroup .form-control').on('change', securityGroup);
-
+    $('#awsEnvVar').on('change', refreshAws);
 
     launchInstances = function () {
         newLines = "\n";
-        newLines += "export REGION=\"" + $('#launchInstanceRegion').val() + "\"\n";
-        newLines += "export SG_NAME=\"" + $('#launchInstanceSGName').val() + "\"\n";
-        newLines += "export PG_NAME=\"" + $('#launchInstancePGName').val() + "\"\n";
+        newLines += "export REGION=\"" + $('#awsRegion').val() + "\"\n";
+        newLines += "export SG_NAME=\"" + $('#awsName').val() + " SG\"\n";
+        newLines += "export PG_NAME=\"" + $('#awsName').val() + " PG\"\n";
         newLines += "export ITYPE=\"" + $('#launchInstanceInstanceType').val() + "\"\n";
         newLines += "export IMG_NAME=\"" + $('#launchInstanceImageName').val() + "\"\n";
         newLines += "export DISKS='" + $('#launchInstanceDisks').val() + "'\n";
         newLines += "export KEY_NAME=\"" + $('#launchInstanceKeyName').val() + "\"\n";
-        newLines += "export TAGS='" + $('#launchInstanceTags').val() + "'\n";
+        newLines += "export TAGS='ResourceType=instance,Tags=[{Key=Name, Value=\""+$('#awsName').val()+"\"}, {Key=owner, Value=\""+$('#awsOwner').val()+"\"}, {Key=\"expire-on\", Value=\""+$("#awsExpireOn").val()+"\"}]'\n";
         newLines += "export NO_OF_HOST=" + $('#launchInstanceNoOfHosts').val();
         $("#launchInstance code").text(replaceFirstNLines($("#launchInstance code").text(), newLines));
     }
     $('#launchInstance .form-control').on('change', launchInstances);
+    
 
     dns = function () {
         newLines = "\n";
-        newLines += "export DOMAIN=\"" + $('#dnsDomain').val() + "\"\n";
+        newLines += "export OWNER=\"" + $('#awsOwner').val() + "\"\n";
+        newLines += "export TAGNAME=\"" + $('#awsName').val() + "\"\n";
+        newLines += "export DOMAIN=\"" + $('#domainName').val() + "\"\n";
         newLines += "export HOSTEDZONE=\"" + $('#dnsHostedZoneId').val() + "\"\n";
-        newLines += "export INTERNAL_HOSTLIST=" + $('#dnsInternalHostList').val() + "\n";
-        newLines += "export INTERNAL_SUBDOMAIN=\"" + $('#dnsInternalSubdomainPrefix').val() + "\"\n";
-        newLines += "export EXTERNAL_HOSTLIST=" + $('#dnsExternalHostList').val() + "\n";
-        newLines += "export EXTERNAL_SUBDOMAIN=\"" + $('#dnsExternalSubdomainPrefix').val() + "\"";
+        newLines += "export INTERNAL_SUBDOMAIN=\"" + $('#intSubdomain').val() + "\"\n";
+        newLines += "export EXTERNAL_SUBDOMAIN=\"" + $('#extSubdomain').val() + "\"";
         $("#dns code").text(replaceFirstNLines($("#dns code").text(), newLines));
     }
     $('#dns .form-control').on('change', dns);
+
+    hosts = function () {
+        newLines = "\n";
+        newLines += "export DOMAIN=\"" + $('#domainName').val() + "\"\n";
+        newLines += "export INTERNAL_SUBDOMAIN=\"" + $('#intSubdomain').val() + "\"\n";
+        newLines += "export EXTERNAL_SUBDOMAIN=\"" + $('#extSubdomain').val() + "\"";
+        $("#hosts code").text(replaceFirstNLines($("#hosts code").text(), newLines));
+    }
+
+    awsTags = function () {
+        newLines = "\n";
+        newLines += "export REGIONS=(" + $('#awsRegion').val() + ")\n";
+        newLines += "export OWNER=\"" + $('#awsOwner').val() + "\"\n";
+        newLines += "export TAGNAME=\"" + $('#awsName').val() + "\"";
+        $("#removeServers code").text(replaceFirstNLines($("#removeServers code").text(), newLines));
+
+        newLines = "\n";
+        newLines += "export REGION=\"" + $('#awsRegion').val() + "\"\n";
+        newLines += "export SG_NAME=\"" + $('#awsName').val() + " SG\"\n";
+        newLines += "export SG_DESCRIPTION=\"" + $('#awsName').val() + " SG\"\n";
+        $("#securityGroup code").text(replaceFirstNLines($("#securityGroup code").text(), newLines));
+
+        newLines = "\n";
+        newLines += "export PG_NAME=\"" + $('#awsName').val() + " PG\"\n";
+        $("#placementGroup code").text(replaceFirstNLines($("#placementGroup code").text(), newLines));
+
+        launchInstances();
+        dns();
+        hosts();
+    }
+    $('#awsTags .form-control').on('change', awsTags);
+    awsTags();
+
 
     prodNotes = function () {
         newLines = "\n";
@@ -115,14 +125,6 @@ $(window).on('load', function () {
     }
     $('#configMongod .form-control').on('change', configMongod);
 
-    hosts = function () {
-        newLines = "\n";
-        newLines += "export DOMAIN=\"" + $('#hostsDomain').val() + "\"\n";
-        newLines += "export INTERNAL_SUBDOMAIN=\"" + $('#hostsInternalSubdomain').val() + "\"\n";
-        newLines += "export EXTERNAL_SUBDOMAIN=\"" + $('#hostsExternalSubdomain').val() + "\"";
-        $("#hosts code").text(replaceFirstNLines($("#hosts code").text(), newLines));
-    }
-    $('#dns .form-control').on('change', dns);
 
     configRS = function () {
         newLines = "\n";

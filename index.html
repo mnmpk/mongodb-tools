@@ -119,6 +119,40 @@ export AWS_ACCESS_KEY_ID=""
 export AWS_SECRET_ACCESS_KEY=""
 export AWS_SESSION_TOKEN=""</textarea>
             </div>
+
+            <div id="awsTags">
+                <h2>Tags</h2>
+                <div>
+                    <label for="awsOwner" class="form-label">Owner</label>
+                    <input type="text" class="form-control" id="awsOwner" value="m.ma">
+                </div>
+                <div>
+                    <label for="awsName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="awsName" value="mma-test">
+                </div>
+                <div>
+                    <label for="awsExpireOn" class="form-label">Expire on</label>
+                    <input type="text" class="form-control" id="awsExpireOn" value="2024-12-31">
+                </div>
+            </div>
+            <div id="domain">
+                <h2>Domain</h2>
+                <div>
+                    <label for="domainName" class="form-label">Domain Name</label>
+                    <input type="text" class="form-control" id="domainName" value="mongodb.com"
+                        placeholder="The domain name">
+                </div>
+                <div>
+                    <label for="intSubdomain" class="form-label">Internal Subdomain</label>
+                    <input type="text" class="form-control" id="intSubdomain" value="int"
+                        placeholder="The internal subdomain">
+                </div>
+                <div>
+                    <label for="extSubdomain" class="form-label">External Subdomain</label>
+                    <input type="text" class="form-control" id="extSubdomain" value="ext"
+                        placeholder="The external subdomain">
+                </div>
+            </div>
         </div>
         <div class="accordion" id="accordionMain">
             <div class="accordion-item">
@@ -188,25 +222,10 @@ sudo ./aws/install
                                 <label class="form-check-label" for="removeServersCheckbox">Take down any previous
                                     servers</label>
                             </div>
-                            <div>
-                                <label for="removeServersRegions" class="form-label">Regions</label>
-                                <input type="text" class="form-control" id="removeServersRegions" value="ap-east-1"
-                                    placeholder="Terminate servers in these regions">
-                            </div>
-                            <div>
-                                <label for="removeServersOwner" class="form-label">Owner name</label>
-                                <input type="text" class="form-control" id="removeServersOwner" value="m.ma"
-                                    placeholder="Filter servers by owner">
-                            </div>
-                            <div>
-                                <label for="removeServersTagName" class="form-label">Tag name (contains)</label>
-                                <input type="text" class="form-control" id="removeServersTagName" value="ps-gcr"
-                                    placeholder="Search servers by tag name">
-                            </div>
                             <pre><code>
-export REGIONS=(ap-east-1)
-export OWNER="m.ma"
-export TAGNAME="ps-gcr"
+
+
+
 for REGION in ${REGIONS[@]}; 
 do
 aws configure set default.region $REGION
@@ -226,25 +245,10 @@ done
                                 <label class="form-check-label" for="securityGroupCheckbox">Create Security
                                     Group</label>
                             </div>
-                            <div>
-                                <label for="securityGroupRegion" class="form-label">Region</label>
-                                <input type="text" class="form-control" id="securityGroupRegion" value="ap-east-1"
-                                    placeholder="Security Group region">
-                            </div>
-                            <div>
-                                <label for="securityGroupName" class="form-label">Security Group name</label>
-                                <input type="text" class="form-control" id="securityGroupName" value="m.ma"
-                                    placeholder="Create security group with name">
-                            </div>
-                            <div>
-                                <label for="securityGroupDesc" class="form-label">Security Group Description</label>
-                                <input type="text" class="form-control" id="securityGroupDesc" value="m ma test sg"
-                                    placeholder="Create security group with description">
-                            </div>
                             <pre><code>
-export REGION="ap-east-1"
-export SG_NAME="m.ma"
-export SG_DESCRIPTION="m ma test sg"
+
+
+
 
 aws configure set default.region $REGION
 export VPCID=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" | jq -r '.Vpcs[0].VpcId')
@@ -260,12 +264,9 @@ aws ec2 authorize-security-group-ingress --group-id $SECURITYGROUP --port 22 --c
                                 <label class="form-check-label" for="placementGroupCheckbox">Create Placement
                                     Group</label>
                             </div>
-                            <div>
-                                <label for="placementGroupName" class="form-label">PG Name</label>
-                                <input type="text" class="form-control" id="placementGroupName" value="mma"
-                                    placeholder="Create placement group with name">
-                            </div>
                             <pre><code>
+
+                                
 aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
                     </code></pre>
                         </div>
@@ -273,21 +274,6 @@ aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="launchInstanceCheckbox">
                                 <label class="form-check-label" for="launchInstanceCheckbox">Launch instance</label>
-                            </div>
-                            <div>
-                                <label for="launchInstanceRegion" class="form-label">Region</label>
-                                <input type="text" class="form-control" id="launchInstanceRegion" value="ap-east-1"
-                                    placeholder="Launch instance in this region">
-                            </div>
-                            <div>
-                                <label for="launchInstanceSGName" class="form-label">SG name</label>
-                                <input type="text" class="form-control" id="launchInstanceSGName" value="allowAll"
-                                    placeholder="Create security group with name">
-                            </div>
-                            <div>
-                                <label for="launchInstancePGName" class="form-label">PG Name</label>
-                                <input type="text" class="form-control" id="launchInstancePGName" value="mma"
-                                    placeholder="Create placement group with name">
                             </div>
                             <div>
                                 <label for="launchInstanceInstanceType" class="form-label">Instance Type</label>
@@ -311,25 +297,20 @@ aws ec2 create-placement-group --group-name "$PG_NAME" --strategy cluster
                                     placeholder="Use this key for connecting instances">
                             </div>
                             <div>
-                                <label for="launchInstanceTags" class="form-label">Tags</label>
-                                <textarea class="form-control"
-                                    id="launchInstanceTags">ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}, {Key="expire-on", Value="2024-12-31"}]</textarea>
-                            </div>
-                            <div>
                                 <label for="launchInstanceNoOfHosts" class="form-label">No. of hosts</label>
                                 <input type="number" class="form-control" id="launchInstanceNoOfHosts" value="3"
                                     placeholder="How many instances to create">
                             </div>
                             <pre><code>
-export REGION="ap-east-1"
-export SG_NAME="allowAll"
-export PG_NAME="mma"
-export ITYPE="m5.xlarge"
-export IMG_NAME="al2023-ami-2023.6.20241010.0-kernel-6.1-x86_64"
-export DISKS='[{"DeviceName": "/dev/xvdb", "Ebs": {"DeleteOnTermination": true, "Iops": 1000, "VolumeSize": 30, "VolumeType": "io1"}},{"DeviceName": "/dev/xvda", "Ebs": {"DeleteOnTermination": true, "VolumeSize": 8, "VolumeType": "gp2"}}]'
-export KEY_NAME="m.ma"
-export TAGS='ResourceType=instance,Tags=[{Key=Name, Value="m ma test"}, {Key=owner, Value="m.ma"}, {Key="expire-on", Value="2024-12-31"}]'
-export NO_OF_HOST=3
+
+                                
+
+
+
+
+
+
+
 
 aws configure set default.region $REGION
 export VPCID=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" | jq -r '.Vpcs[0].VpcId')
@@ -352,44 +333,29 @@ aws ec2 run-instances --image-id $AMI \
                                 <label class="form-check-label" for="dnsCheckbox">DNS</label>
                             </div>
                             <div>
-                                <label for="dnsDomain" class="form-label">Domain Name</label>
-                                <input type="text" class="form-control" id="dnsDomain" value="mdbrecruit.net"
-                                    placeholder="The domain name">
-                            </div>
-                            <div>
                                 <label for="dnsHostedZoneId" class="form-label">Hosted zone Id</label>
                                 <input type="text" class="form-control" id="dnsHostedZoneId" value="Z2S69UIBKD4GJX"
                                     placeholder="The Hosted Zone Id">
                             </div>
-                            <div>
+                            <!--div>
                                 <label for="dnsInternalHostList" class="form-label">host list</label>
                                 <textarea class="form-control"
                                     id="dnsInternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .privateip ')</textarea>
                             </div>
                             <div>
-                                <label for="dnsInternalSubdomainPrefix" class="form-label">Subdomain prefix</label>
-                                <input type="text" class="form-control" id="dnsInternalSubdomainPrefix" value="mma"
-                                    placeholder="The sub domain prefix">
-                            </div>
-                            <div>
                                 <label for="dnsExternalHostList" class="form-label">host list</label>
                                 <textarea class="form-control"
                                     id="dnsExternalHostList">$(aws ec2 describe-instances --filters "Name=tag:owner,Values=firstname.lastname" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("Tradecraft") )| .publicip ')</textarea>
-                            </div>
-                            <div>
-                                <label for="dnsExternalSubdomainPrefix" class="form-label">Subdomain prefix</label>
-                                <input type="text" class="form-control" id="dnsExternalSubdomainPrefix" value="exmma"
-                                    placeholder="The external sub domain prefix">
-                            </div>
+                            </div-->
                             <pre><code>
-export DOMAIN="mdbrecruit.net"
-export HOSTEDZONE="Z2S69UIBKD4GJX"
-export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma") )| .privateip ')
-export INTERNAL_SUBDOMAIN="mma"
-export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma") )| .publicip ')
-export EXTERNAL_SUBDOMAIN="exmma"
+                                
 
 
+
+
+                                
+
+export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("'$TAGNAME'") )| .privateip ')
 HOSTNUM=1
 while IFS= read -r IP || [[ -n $IP ]]; do    
     export FQDN="${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
@@ -409,7 +375,7 @@ while IFS= read -r IP || [[ -n $IP ]]; do
     let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$INTERNAL_HOSTLIST")
 
-
+export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("'$TAGNAME'") )| .publicip ')
 HOSTNUM=1
 while IFS= read -r IP || [[ -n $IP ]]; do    
     export FQDN="${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
@@ -450,7 +416,7 @@ done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                                 <input class="form-check-input" type="checkbox" id="hostsCheckbox">
                                 <label class="form-check-label" for="hostsCheckbox">Hosts file</label>
                             </div>
-                            <div>
+                            <!--div>
                                 <label for="hostsDomain" class="form-label">Domain Name</label>
                                 <input type="text" class="form-control" id="dnsDomain" value="mongodb.com"
                                     placeholder="The domain name">
@@ -464,14 +430,13 @@ done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                                 <label for="hostsExternalSubdomain" class="form-label">Subdomain prefix</label>
                                 <input type="text" class="form-control" id="hostsExternalSubdomain" value="exmma"
                                     placeholder="The external sub domain">
-                            </div>
+                            </div-->
                             <pre><code>
-export DOMAIN="mongodb.com"
-export INTERNAL_SUBDOMAIN="mma"
-export EXTERNAL_SUBDOMAIN="exmma"
 
-export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .privateip')
-export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=m.ma" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("m ma test") )| .publicip ')
+
+
+
+export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("'$TAGNAME'") )| .privateip ')
 
 HOSTNUM=1
 content=""
@@ -480,6 +445,9 @@ content="$content\n$IP   ${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
 let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$INTERNAL_HOSTLIST")
 for IP in $'INTERNAL_HOSTLIST'
+
+export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("'$TAGNAME'") )| .publicip ')
+
 HOSTNUM=1
 while IFS= read -r IP || [[ -n $IP ]]; do
 content="$content\n$IP   ${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
