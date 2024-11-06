@@ -8,16 +8,32 @@ $(window).on('load', function () {
             $("#final_" + cId).remove();
         } else {
             let value = $("#" + cId + " code").text();
-            if ("awsSetting" == cId){
+            if ("awsSetting" == cId) {
                 value = $('#awsEnvVar').val();
                 //value.replaceAll("\n","<br/>");
             }
-            $('#final').append("<pre id='final_" + cId + "'>" + value + "</pre>");
+            let container = "final";
+            switch (cId) {
+                case "awsSetting":
+                case "installJq":
+                case "installMongoCli":
+                case "installMongosh":
+                case "installAwsCli":
+                case "removeServers":
+                case "securityGroup":
+                case "placementGroup":
+                case "launchInstance":
+                case "dns":
+                case "hosts":
+                    container = "local";
+                    break;
+            }
+            $('#' + container).append("<pre id='final_" + cId + "'>" + value + "</pre>");
         }
     }
     $('input[type=checkbox]').on('click', append);
 
-    refreshAws = ()=>{
+    refreshAws = () => {
         $('#final_awsSetting').text($('#awsEnvVar').val());
     }
     awsSetting = function () {
@@ -42,18 +58,18 @@ $(window).on('load', function () {
         newLines += "export IMG_NAME=\"" + $('#launchInstanceImageName').val() + "\"\n";
         newLines += "export DISKS='" + $('#launchInstanceDisks').val() + "'\n";
         newLines += "export KEY_NAME=\"" + $('#launchInstanceKeyName').val() + "\"\n";
-        newLines += "export TAGS='ResourceType=instance,Tags=[{Key=Name, Value=\""+$('#awsName').val()+"\"}, {Key=owner, Value=\""+$('#awsOwner').val()+"\"}, {Key=\"expire-on\", Value=\""+$("#awsExpireOn").val()+"\"}]'\n";
+        newLines += "export TAGS='ResourceType=instance,Tags=[{Key=Name, Value=\"" + $('#awsName').val() + "\"}, {Key=owner, Value=\"" + $('#awsOwner').val() + "\"}, {Key=\"expire-on\", Value=\"" + $("#awsExpireOn").val() + "\"}]'\n";
         newLines += "export NO_OF_HOST=" + $('#launchInstanceNoOfHosts').val();
         $("#launchInstance code").text(replaceFirstNLines($("#launchInstance code").text(), newLines));
     }
     $('#launchInstance .form-control').on('change', launchInstances);
-    
+
 
     dns = function () {
         newLines = "\n";
         newLines += "export OWNER=\"" + $('#awsOwner').val() + "\"\n";
         newLines += "export TAGNAME=\"" + $('#awsName').val() + "\"\n";
-        newLines += "export DOMAIN=\"" + $('#domainName').val() + "\"\n";
+        newLines += "export DOMAIN=\"" + "mdbrecruit.net" + "\"\n";
         newLines += "export HOSTEDZONE=\"" + $('#dnsHostedZoneId').val() + "\"\n";
         newLines += "export INTERNAL_SUBDOMAIN=\"" + $('#intSubdomain').val() + "\"\n";
         newLines += "export EXTERNAL_SUBDOMAIN=\"" + $('#extSubdomain').val() + "\"";
