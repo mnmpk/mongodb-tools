@@ -1137,7 +1137,9 @@ echo "echo \"$content\" | sudo tee -a /etc/hosts"
                                         <label class="form-check-label" for="dockerCheckbox">Docker</label>
                                     </div>
                                     <pre><code>
-    docker run -it --name container_name --mount src=/Users/mma/Documents/Docker/vol/test,target=/data,type=bind registry.access.redhat.com/ubi8/ubi bash
+docker build -t myimage:latest .
+docker run -p 80:80 myimage
+docker run -it --name container_name --mount src=/Users/mma/Documents/Docker/vol/test,target=/data,type=bind registry.access.redhat.com/ubi8/ubi bash
                             </code></pre>
                                 </div>
                             </div>
