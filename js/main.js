@@ -55,12 +55,12 @@ $(window).on('load', function () {
         if ($('#securityGroup input[type=checkbox]').is(':checked')) {
             newLines += "export SG_NAME=\"" + $('#awsName').val() + " SG\"\n";
         } else {
-            newLines += "export SG_NAME=allowAll\n";
+            newLines += "export SG_NAME=\"allowAll\"\n";
         }
         if ($('#placementGroup input[type=checkbox]').is(':checked')) {
             newLines += "export PG_NAME=\"" + $('#awsName').val() + " PG\"\n";
         } else {
-            newLines += "export PG_NAME=cluster\n";
+            newLines += "export PG_NAME=\"cluster\"\n";
         }
         newLines += "export ITYPE=\"" + $('#launchInstanceInstanceType').val() + "\"\n";
         newLines += "export IMG_NAME=\"" + $('#launchInstanceImageName').val() + "\"\n";
@@ -105,7 +105,7 @@ $(window).on('load', function () {
         if ($('#securityGroup input[type=checkbox]').is(':checked')) {
             newLines += "export SG_NAME=\"" + $('#awsName').val() + " SG\"\n";
         } else {
-            newLines += "export SG_NAME=allowAll\n";
+            newLines += "export SG_NAME=\"allowAll\"\n";
         }
         newLines += "export SG_DESCRIPTION=\"" + $('#awsName').val() + " SG\"\n";
         $("#securityGroup code").text(replaceFirstNLines($("#securityGroup code").text(), newLines));
@@ -114,7 +114,7 @@ $(window).on('load', function () {
         if ($('#placementGroup input[type=checkbox]').is(':checked')) {
             newLines += "export PG_NAME=\"" + $('#awsName').val() + " PG\"\n";
         } else {
-            newLines += "export PG_NAME=cluster\n";
+            newLines += "export PG_NAME=\"cluster\"\n";
         }
         $("#placementGroup code").text(replaceFirstNLines($("#placementGroup code").text(), newLines));
 
