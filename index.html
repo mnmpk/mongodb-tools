@@ -346,6 +346,9 @@ while IFS= read -r IP || [[ -n $IP ]]; do
     let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$EXTERNAL_HOSTLIST")
 
+while IFS= read -r IP || [[ -n $IP ]]; do
+    echo $content | ssh -o StrictHostKeyChecking=accept-new -i ~/Documents/mma_hk.pem ec2-user@$IP 'sudo tee -a /etc/hosts'
+done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                             </code></pre>
                                 </div>
                             </div>
@@ -394,7 +397,6 @@ while IFS= read -r IP || [[ -n $IP ]]; do
 content="$content\n$IP   ${INTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
 let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$INTERNAL_HOSTLIST")
-for IP in $'INTERNAL_HOSTLIST'
 
 export EXTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "publicip" : .PublicIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("'$TAGNAME'") )| .publicip ')
 
@@ -403,6 +405,8 @@ while IFS= read -r IP || [[ -n $IP ]]; do
 content="$content\n$IP   ${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
 let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$EXTERNAL_HOSTLIST")
+
+
 echo "echo \"$content\" | sudo tee -a /etc/hosts"
                     </code></pre>
                                 </div>
@@ -745,9 +749,9 @@ echo "echo \"$content\" | sudo tee -a /etc/hosts"
     sudo service mongodb-mms start
     
     sudo cp /etc/mongodb-mms ~/
-    scp -i ~/Documents/AWS/mma_hk.pem ec2-user@43.198.241.165:~/gen.key .
-    scp -i ~/Documents/AWS/mma_hk.pem ./gen.key ec2-user@43.198.222.65:~
-    scp -i ~/Documents/AWS/mma_hk.pem ./gen.key ec2-user@16.162.32.69:~
+    scp -i ~/Documents/mma_hk.pem ec2-user@43.198.241.165:~/gen.key .
+    scp -i ~/Documents/mma_hk.pem ./gen.key ec2-user@43.198.222.65:~
+    scp -i ~/Documents/mma_hk.pem ./gen.key ec2-user@16.162.32.69:~
     
     
     sudo mv ~/gen.key /etc/mongodb-mms
