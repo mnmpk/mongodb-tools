@@ -87,6 +87,8 @@ $(window).on('load', function () {
 
     hosts = function () {
         newLines = "\n";
+        newLines += "export OWNER=\"" + $('#awsOwner').val() + "\"\n";
+        newLines += "export TAGNAME=\"" + $('#awsName').val() + "\"\n";
         newLines += "export DOMAIN=\"" + $('#domainName').val() + "\"\n";
         newLines += "export INTERNAL_SUBDOMAIN=\"" + $('#intSubdomain').val() + "\"\n";
         newLines += "export EXTERNAL_SUBDOMAIN=\"" + $('#extSubdomain').val() + "\"";

@@ -346,9 +346,6 @@ while IFS= read -r IP || [[ -n $IP ]]; do
     let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$EXTERNAL_HOSTLIST")
 
-while IFS= read -r IP || [[ -n $IP ]]; do
-    echo $content | ssh -o StrictHostKeyChecking=accept-new -i ~/Documents/mma_hk.pem ec2-user@$IP 'sudo tee -a /etc/hosts'
-done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                             </code></pre>
                                 </div>
                             </div>
@@ -388,6 +385,8 @@ done < <(printf '%s' "$EXTERNAL_HOSTLIST")
 
 
 
+                                        
+
 
 export INTERNAL_HOSTLIST=$(aws ec2 describe-instances --filters "Name=tag:owner,Values=$OWNER" "Name=instance-state-name,Values=running" | jq -r '.Reservations[].Instances[] | { "privateip" : .PrivateIpAddress, "name" : .Tags[] | select ( .Key == "Name").Value } | select ( .name | contains ("'$TAGNAME'") )| .privateip ')
 
@@ -406,8 +405,9 @@ content="$content\n$IP   ${EXTERNAL_SUBDOMAIN}${HOSTNUM}.${DOMAIN}"
 let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$EXTERNAL_HOSTLIST")
 
-
-echo "echo \"$content\" | sudo tee -a /etc/hosts"
+while IFS= read -r IP || [[ -n $IP ]]; do
+    echo $content | ssh -o StrictHostKeyChecking=accept-new -i ~/Documents/mma_hk.pem ec2-user@$IP 'sudo tee -a /etc/hosts'
+done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                     </code></pre>
                                 </div>
                             </div>
