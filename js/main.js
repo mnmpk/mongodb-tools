@@ -52,12 +52,12 @@ $(window).on('load', function () {
     launchInstances = function () {
         newLines = "\n";
         newLines += "export REGION=\"" + $('#awsRegion').val() + "\"\n";
-        if ($('#securityGroup').is(':checked')) {
+        if ($('#securityGroup input[type=checkbox]').is(':checked')) {
             newLines += "export SG_NAME=\"" + $('#awsName').val() + " SG\"\n";
         } else {
             newLines += "export SG_NAME=allowAll\n";
         }
-        if ($('#placementGroup').is(':checked')) {
+        if ($('#placementGroup input[type=checkbox]').is(':checked')) {
             newLines += "export PG_NAME=\"" + $('#awsName').val() + " PG\"\n";
         } else {
             newLines += "export PG_NAME=cluster\n";
@@ -102,7 +102,7 @@ $(window).on('load', function () {
 
         newLines = "\n";
         newLines += "export REGION=\"" + $('#awsRegion').val() + "\"\n";
-        if ($('#securityGroup').is(':checked')) {
+        if ($('#securityGroup input[type=checkbox]').is(':checked')) {
             newLines += "export SG_NAME=\"" + $('#awsName').val() + " SG\"\n";
         } else {
             newLines += "export SG_NAME=allowAll\n";
@@ -111,7 +111,7 @@ $(window).on('load', function () {
         $("#securityGroup code").text(replaceFirstNLines($("#securityGroup code").text(), newLines));
 
         newLines = "\n";
-        if ($('#placementGroup').is(':checked')) {
+        if ($('#placementGroup input[type=checkbox]').is(':checked')) {
             newLines += "export PG_NAME=\"" + $('#awsName').val() + " PG\"\n";
         } else {
             newLines += "export PG_NAME=cluster\n";
