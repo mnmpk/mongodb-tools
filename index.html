@@ -406,7 +406,7 @@ let "HOSTNUM=HOSTNUM+1"
 done < <(printf '%s' "$EXTERNAL_HOSTLIST")
 
 while IFS= read -r IP || [[ -n $IP ]]; do
-    echo $content | ssh -o StrictHostKeyChecking=accept-new -i ~/Documents/mma_hk.pem ec2-user@$IP 'sudo tee -a /etc/hosts'
+    echo -e $content | ssh -o StrictHostKeyChecking=accept-new -i ~/Documents/mma_hk.pem ec2-user@$IP 'sudo tee -a /etc/hosts'
 done < <(printf '%s' "$EXTERNAL_HOSTLIST")
                     </code></pre>
                                 </div>
@@ -951,7 +951,7 @@ done < <(printf '%s' "$EXTERNAL_HOSTLIST")
     sudo touch /etc/pki/CA/index.txt
     echo 1000 | sudo tee  /etc/pki/CA/serial
     
-    for HOST in $HOSTLIST
+    for HOST in "${HOSTLIST[@]}"
     do
     openssl11 req -newkey rsa:2048 -nodes -new -addext "subjectAltName=DNS:${ALTNAME},DNS:${HOST}" -sha256 -out ${HOST}.csr -keyout ${HOST}.key -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${HOST}"
     sudo openssl11 ca -notext -in ${HOST}.csr -out ${HOST}.cert -keyfile ca.key -cert ca.cert -outdir . -batch
